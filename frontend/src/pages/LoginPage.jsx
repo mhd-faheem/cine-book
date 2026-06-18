@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "../styles/LoginPage.css";
 
 
@@ -6,6 +6,7 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const passwordRef = useRef(null);
 
   const handleLogin = () => {
   if (!email || !password) {
@@ -25,58 +26,83 @@ function LoginPage() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h1>CineBook</h1>
+  <div className="min-h-screen bg-black flex items-center justify-center px-4">
+    <div className="bg-zinc-900 p-8 rounded-3xl w-full max-w-md">
+      <h1 className="text-red-600 text-4xl font-bold text-center">
+        CineBook
+      </h1>
 
-        <h2>Welcome Back</h2>
+      <h2 className="text-white text-center text-2xl mt-4 mb-6">
+        Welcome Back
+      </h2>
 
-        <div>
-          <label>Email</label>
-          <br />
+      <div className="mb-4">
+        <label className="text-white block mb-2">
+          Email
+        </label>
 
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              passwordRef.current.focus();
+            }
+          }}
+          className="w-full p-3 rounded-xl bg-zinc-800 text-white"
+        />
+      </div>
 
-        <br />
+      <div className="mb-4">
+        <label className="text-white block mb-2">
+          Password
+        </label>
 
-        <div>
-          <label>Password</label>
-          <br />
+        <input
+          ref={passwordRef}
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleLogin();
+            }
+          }}
+          className="w-full p-3 rounded-2xl bg-zinc-800 text-white"
+        />
+      </div>
 
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+      {error && (
+        <p className="text-red-500 mb-4">
+          {error}
+        </p>
+      )}
 
-        <br />
+      <button
+        onClick={handleLogin}
+        className="w-full bg-red-600 hover:bg-red-700 text-white p-3 rounded-3xl"
+      >
+        Login
+      </button>
 
-        {error && <p>{error}</p>}
+      <div className="text-center mt-5">
+        <p className="text-gray-400">
+          Don't have an account?
+        </p>
+
         <button
-          className="login-btn"
-          onClick={handleLogin}
+          onClick={handleSignup}
+          className="text-red-500 mt-2"
         >
-          Login
+          Sign Up
         </button>
-
-        <div className="signup-section">
-          <p>Don't have an account?</p>
-
-          <button onClick={handleSignup}>
-            Sign Up
-          </button>
-        </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default LoginPage;
