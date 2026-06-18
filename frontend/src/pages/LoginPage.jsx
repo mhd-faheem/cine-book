@@ -1,15 +1,24 @@
 import { useState } from "react";
 import "../styles/LoginPage.css";
 
+
 function LoginPage() {
+  const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
-    console.log("Login Clicked");
-    console.log(email);
-    console.log(password);
-  };
+  if (!email || !password) {
+    setError("Please fill all fields");
+    return;
+  }
+
+  setError("");
+
+  console.log("Login Clicked");
+  console.log(email);
+  console.log(password);
+};
 
   const handleSignup = () => {
     console.log("Navigate to Signup Page");
@@ -50,6 +59,7 @@ function LoginPage() {
 
         <br />
 
+        {error && <p>{error}</p>}
         <button
           className="login-btn"
           onClick={handleLogin}
