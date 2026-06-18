@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../styles/LoginPage.css";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,21 +16,8 @@ function LoginPage() {
   };
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <div
-        style={{
-          border: "1px solid gray",
-          padding: "30px",
-          width: "350px",
-        }}
-      >
+    <div className="login-container">
+      <div className="login-card">
         <h1>CineBook</h1>
 
         <h2>Welcome Back</h2>
@@ -62,17 +50,20 @@ function LoginPage() {
 
         <br />
 
-        <button onClick={handleLogin}>
+        <button
+          className="login-btn"
+          onClick={handleLogin}
+        >
           Login
         </button>
 
-        <p>
-          Don't have an account?
-        </p>
+        <div className="signup-section">
+          <p>Don't have an account?</p>
 
-        <button onClick={handleSignup}>
-          Sign Up
-        </button>
+          <button onClick={handleSignup}>
+            Sign Up
+          </button>
+        </div>
       </div>
     </div>
   );
