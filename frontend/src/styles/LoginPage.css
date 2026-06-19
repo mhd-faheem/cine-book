@@ -1,0 +1,33 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card {
+  border: 1px solid gray;
+  padding: 30px;
+  width: 350px;
+}
+
+.login-card h1,
+.login-card h2 {
+  text-align: center;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.signup-section {
+  text-align: center;
+}
