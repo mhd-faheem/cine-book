@@ -15,23 +15,55 @@ const SignupPage = () => {
   const confirmRef = useRef(null);
   const navigate = useNavigate()
 
-  const handleSignup = (e) => {
-    e.preventDefault();
+ const handleSignup = (e) => {
+  e.preventDefault();
 
-    if (!name || !email || !password || !confirmPassword) {
-      setError("Please fill all fields");
-      return;
-    }
+  // reset messages first
+  setError("");
+  setMessage("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+  const cleanName = name.trim();
+  const cleanEmail = email.trim();
 
-    setError("");
-    console.log({ name, email, password, confirmPassword });
-    setMessage("Account created successfully !")
-  };
+  // 1. Empty check
+  if (!cleanName || !cleanEmail || !password || !confirmPassword) {
+    setError("All fields are required");
+    return;
+  }
+
+  // 2. Name validation
+  if (cleanName.length < 3) {
+    setError("Name must be at least 3 characters");
+    return;
+  }
+
+  // 3. Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(cleanEmail)) {
+    setError("Enter a valid email address");
+    return;
+  }
+
+  // 4. Password length
+  if (password.length < 6) {
+    setError("Password must be at least 6 characters");
+    return;
+  }
+
+  // 5. Password match
+  if (password !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  // SUCCESS
+  setMessage("Account created successfully !");
+
+  setName("");
+  setEmail("");
+  setPassword("");
+  setConfirmPassword("");
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-black text-white px-4">
@@ -113,16 +145,16 @@ const SignupPage = () => {
         />
 
 
-        {/* Error Message */}
         {error && (
-          <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
-        )}
-        
+            <p className="text-red-500 text-sm mb-3 text-center">
+                {error}
+            </p>
+            )}
 
         {message && (
-        <p className="text-green-500 text-center mb-3">
-            {message}
-        </p>
+            <p className="text-green-500 text-sm mb-3 text-center">
+                {message}
+            </p>
         )}
 
         {/* Button */}
@@ -148,7 +180,7 @@ const SignupPage = () => {
         <div className="flex justify-center mt-6">
             <button
                 onClick={() => navigate(-1)}
-                className="text-gray-400 hover:text-white text-sm px-3 py-0"
+                className="text-gray-400 hover:text-white text-sm px-3 py-0 cursor-pointer"
   >
                 ← Back
             </button>

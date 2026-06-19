@@ -14,6 +14,9 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
+    setError("");
+    setMessage("");
+
     if (!email || !password) {
       setError("Please fill all fields");
       return;
@@ -23,6 +26,9 @@ const LoginPage = () => {
 
     console.log({ email, password });
     setMessage("Login successful !")
+
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -76,7 +82,7 @@ const LoginPage = () => {
         )}
 
         {message && (
-        <p className="text-green-500 text-center mb-3">
+        <p className="text-green-500 text-sm text-center mb-3">
           {message}
         </p>
         )}
@@ -103,7 +109,7 @@ const LoginPage = () => {
         <div className="flex justify-center mt-6">
             <button
                 onClick={() => navigate(-1)}
-                className="text-gray-400 hover:text-white text-sm px-3 py-0"
+                className="text-gray-400 hover:text-white text-sm px-3 py-0 cursor-pointer"
   >
                 ← Back
             </button>
