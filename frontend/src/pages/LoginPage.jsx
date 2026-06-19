@@ -1,49 +1,54 @@
-import { useState, useRef } from "react";
-import "../styles/LoginPage.css";
+import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
 
-
-function LoginPage() {
-  const [error, setError] = useState("");
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState('')
+  const navigate = useNavigate()
+
   const passwordRef = useRef(null);
 
-  const handleLogin = () => {
-  if (!email || !password) {
-    setError("Please fill all fields");
-    return;
-  }
+  const handleLogin = (e) => {
+    e.preventDefault();
 
-  setError("");
+    setError("");
+    setMessage("");
 
-  console.log("Login Clicked");
-  console.log(email);
-  console.log(password);
-};
+    if (!email || !password) {
+      setError("Please fill all fields");
+      return;
+    }
 
-  const handleSignup = () => {
-    console.log("Navigate to Signup Page");
+    setError("");
+
+    console.log({ email, password });
+    setMessage("Login successful !")
+
+    setEmail("");
+    setPassword("");
   };
 
   return (
-  <div className="min-h-screen bg-black flex items-center justify-center px-4">
-    <div className="bg-zinc-900 p-8 rounded-3xl w-full max-w-md">
-      <h1 className="text-red-600 text-4xl font-bold text-center">
-        CineBook
-      </h1>
+    <div className="flex items-center justify-center min-h-screen bg-black text-white px-4">
+      <form
+        onSubmit={handleLogin}
+        className="bg-zinc-900 p-8 rounded-3xl w-full max-w-md pb-4"
+      >
+        {/* <h1 className="text-red-600 text-4xl font-bold text-center mb-4">
+          CineBook
+        </h1> */}
+        {/* Title (same style as Signup) */}
+        <h2 className="text-3xl font-bold mb-6 text-red-500 text-center">
+          Welcome Back
+        </h2>
 
-      <h2 className="text-white text-center text-2xl mt-4 mb-6">
-        Welcome Back
-      </h2>
-
-      <div className="mb-4">
-        <label className="text-white block mb-2">
-          Email
-        </label>
-
+        {/* Email */}
         <input
           type="email"
-          placeholder="Enter your email"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => {
@@ -51,58 +56,68 @@ function LoginPage() {
               passwordRef.current.focus();
             }
           }}
-          className="w-full p-3 rounded-xl bg-zinc-800 text-white"
+          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
         />
-      </div>
 
-      <div className="mb-4">
-        <label className="text-white block mb-2">
-          Password
-        </label>
-
+        {/* Password */}
         <input
           ref={passwordRef}
           type="password"
-          placeholder="Enter your password"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              handleLogin();
+              handleLogin(e);
             }
           }}
-          className="w-full p-3 rounded-2xl bg-zinc-800 text-white"
+          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
         />
-      </div>
 
-      {error && (
-        <p className="text-red-500 mb-4">
-          {error}
+        {/* Error */}
+        {error && (
+          <p className="text-red-500 text-sm mb-3 text-center">
+            {error}
+          </p>
+        )}
+
+        {message && (
+        <p className="text-green-500 text-sm text-center mb-3">
+          {message}
         </p>
-      )}
+        )}
 
-      <button
-        onClick={handleLogin}
-        className="w-full bg-red-600 hover:bg-red-700 text-white p-3 rounded-3xl"
-      >
-        Login
-      </button>
-
-      <div className="text-center mt-5">
-        <p className="text-gray-400">
-          Don't have an account?
-        </p>
-
+        {/* Button */}
         <button
-          onClick={handleSignup}
-          className="text-red-500 mt-2"
+          type="submit"
+          className="w-full bg-red-600 py-2 rounded-3xl font-semibold cursor-pointer hover:bg-red-700"
         >
-          Sign Up
+          Login
         </button>
-      </div>
+
+        {/* Signup Link */}
+        <p className="mt-4 text-center text-sm">
+          Don’t have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-red-500 hover:underline cursor-pointer"
+          >
+            Sign Up
+          </Link>
+        </p>
+
+        <div className="flex justify-center mt-6">
+            <button
+                onClick={() => navigate(-1)}
+                className="text-gray-400 hover:text-white text-sm px-3 py-0 cursor-pointer"
+  >
+                ← Back
+            </button>
+        </div>
+
+      </form>
     </div>
-  </div>
-);
-}
+  );
+};
 
 export default LoginPage;

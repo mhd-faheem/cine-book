@@ -1,21 +1,20 @@
 import React from 'react'
-import HomePage from './pages/HomePage'
-import LoginPage from "./pages/LoginPage";
+import { Routes, Route } from 'react-router-dom'
 
-// const App = () => {
-//   return (
-//     <div>
-//       hello homepage
-//     </div>
-//   )
-// }
+
+import HomePage from './pages/HomePage'
+import LoginPage from "./pages/LoginPage"
+import SignupPage from "./pages/SignupPage"
 
 function App() {
   return (
-    <div>
-      <HomePage/>
-    </div>  
-  );
+    <Routes>
+      
+      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+    </Routes>
+  )
 }
 
 export default App
