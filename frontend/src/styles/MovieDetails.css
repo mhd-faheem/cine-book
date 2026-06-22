@@ -1,0 +1,67 @@
+.movie-details-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.movie-details-card {
+  display: flex;
+  gap: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.movie-details-image {
+  width: 280px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.movie-details-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.movie-details-info h1 {
+  font-size: 32px;
+  margin-bottom: 15px;
+}
+
+.movie-description {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 25px;
+  max-width: 500px;
+}
+
+.book-now-btn {
+  width: fit-content;
+  padding: 12px 24px;
+  background-color: #e50914;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.book-now-btn:hover {
+  background-color: #b20710;
+}
+
+.back-btn {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #333;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.back-btn:hover {
+  color: #e50914;
+}
