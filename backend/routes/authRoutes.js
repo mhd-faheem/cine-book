@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   protect,
+  adminOnly,
 } = require("../middleware/authMiddleware");
 
 const {
@@ -20,5 +21,17 @@ router.get("/profile", protect, (req, res) => {
     user: req.user,
   });
 });
+
+router.get(
+  "/admin-dashboard",
+  protect,
+  adminOnly,
+  (req, res) => {
+    res.json({
+      success: true,
+      message: "Welcome Admin",
+    });
+  }
+);
 
 module.exports = router;
