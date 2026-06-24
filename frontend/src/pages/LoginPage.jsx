@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
+import axios from "axios";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -11,26 +12,53 @@ const LoginPage = () => {
 
   const passwordRef = useRef(null);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = async (e) => {
+  e.preventDefault();
 
-    setError("");
-    setMessage("");
+  setError("");
+  setMessage("");
 
-    if (!email || !password) {
-      setError("Please fill all fields");
-      return;
-    }
+  // validation
+  if (!email || !password) {
+    setError("Please fill all fields");
+    return;
+  }
 
-    setError("");
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/auth/login`,
+      {
+        email,
+        password,
+      }
+    );
 
-    console.log({ email, password });
-    setMessage("Login successful !")
+    console.log(response.data);
 
+    // backend response
+    const { token, user } = response.data;
+
+    // store in localStorage
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    setMessage("Login successful!");
+
+    // optional reset
     setEmail("");
     setPassword("");
-  };
 
+    // redirect
+    navigate("/");
+
+  } catch (error) {
+    console.log(error.response?.data);
+
+    setError(
+      error.response?.data?.message || "Login failed"
+    );
+  }
+};
   return (
     <div className="flex items-center justify-center min-h-screen bg-black text-white px-4">
       <form
