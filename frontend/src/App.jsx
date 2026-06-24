@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage"
 import SignupPage from "./pages/SignupPage"
 import MovieDetails from './pages/MovieDetails'
 import MyBookings from './pages/MyBookings'
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -15,7 +16,11 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/movies/:id" element={<MovieDetails />} />
-      <Route path="/bookings" element={<MyBookings />} />
+      <Route path="/bookings" element={
+        <ProtectedRoute>
+          <MyBookings />
+        </ProtectedRoute>
+      } />
 
     </Routes>
   )

@@ -1,41 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getUser, logout } from "../utils/auth";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
+  const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setUser(getUser());
-  }, []);
 
   const handleLogout = () => {
     logout();
-    setUser(null);
     navigate("/");
   };
 
   return (
     <div className="flex flex-row justify-between p-5 border border-gray-700 items-center text-white bg-black">
-      
+
       {/* Logo */}
       <p className="text-3xl font-extrabold text-red-500">
         CineBook
       </p>
 
-      {/* Nav links */}
+      {/* Navigation */}
       <ul className="flex gap-4 items-center">
 
-        <Link to="/bookings">
-          <li>My Bookings</li>
-        </Link>
+        {isAuthenticated && (
+          <Link to="/bookings">
+            <li>My Bookings</li>
+          </Link>
+        )}
 
-        {/* AUTH UI */}
-        {user ? (
+        {isAuthenticated ? (
           <div className="flex items-center gap-4">
-            <span className="text-white">
-              Welcome, {user.name}
+            <span>
+              Welcome, {user?.name}
             </span>
 
             <button

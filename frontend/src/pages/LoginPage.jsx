@@ -2,13 +2,16 @@ import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState('')
+  const { login } = useAuth();
   const navigate = useNavigate()
+  
 
   const passwordRef = useRef(null);
 
@@ -18,7 +21,6 @@ const LoginPage = () => {
   setError("");
   setMessage("");
 
-  // validation
   if (!email || !password) {
     setError("Please fill all fields");
     return;
@@ -35,20 +37,14 @@ const LoginPage = () => {
 
     console.log(response.data);
 
-    // backend response
-    const { token, user } = response.data;
-
-    // store in localStorage
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    // 🔥 IMPORTANT: global auth update
+    login(response.data);
 
     setMessage("Login successful!");
 
-    // optional reset
     setEmail("");
     setPassword("");
 
-    // redirect
     navigate("/");
 
   } catch (error) {
