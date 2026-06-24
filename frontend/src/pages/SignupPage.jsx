@@ -69,9 +69,16 @@ const SignupPage = () => {
     );
 
     console.log(response.data);
-    alert("Signup successful!");
+    // alert("Signup successful!");
+    // alert("Signup successful! Please login.");
+    // navigate("/login");
+    
 
-    setMessage("Account created successfully!");
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
+    // setMessage("Signup successful! Redirecting...");
+    setMessage("Account created successfully! Redirecting...");
 
     // optional reset
     setName("");
