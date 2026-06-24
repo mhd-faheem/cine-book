@@ -39,13 +39,16 @@ const LoginPage = () => {
 
     // 🔥 IMPORTANT: global auth update
     login(response.data);
-
-    setMessage("Login successful!");
+  
+    setMessage("Login successful! Redirecting...");
 
     setEmail("");
     setPassword("");
 
-    navigate("/");
+    setTimeout(() => {
+  navigate("/");
+}, 1000);
+    // navigate("/");
 
   } catch (error) {
     console.log(error.response?.data);

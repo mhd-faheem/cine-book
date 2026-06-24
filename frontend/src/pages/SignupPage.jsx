@@ -77,8 +77,8 @@ const SignupPage = () => {
     setTimeout(() => {
       navigate("/login");
     }, 1500);
-    // setMessage("Signup successful! Redirecting...");
-    setMessage("Account created successfully! Redirecting...");
+    // setMessage("Signup successful! Please login.");
+    setMessage("Account created successfully! Please login. ");
 
     // optional reset
     setName("");

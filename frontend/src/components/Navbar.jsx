@@ -22,17 +22,17 @@ const Navbar = () => {
       {/* Navigation */}
       <ul className="flex gap-4 items-center">
 
-        {isAuthenticated && (
-          <Link to="/bookings">
-            <li>My Bookings</li>
-          </Link>
-        )}
-
         {isAuthenticated ? (
           <div className="flex items-center gap-4">
             <span>
               Welcome, {user?.name}
             </span>
+
+        {isAuthenticated && (
+          <Link to="/bookings">
+            <li>My Bookings</li>
+          </Link>
+        )}
 
             <button
               onClick={handleLogout}
