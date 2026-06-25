@@ -4,6 +4,12 @@
     gap: 10px;
 }
 
+.ticket-counter button{
+  font-size: 22px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
 .back-button {
   color: #333;
   font-weight: 600;

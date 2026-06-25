@@ -15,9 +15,9 @@ const Navbar = () => {
     <div className="flex flex-row justify-between p-5 border border-gray-700 items-center text-white bg-black">
 
       {/* Logo */}
-      <p className="text-3xl font-extrabold text-red-500">
+      <Link to={"/"} className="text-3xl font-extrabold text-red-500">
         CineBook
-      </p>
+      </Link>
 
       {/* Navigation */}
       <ul className="flex gap-4 items-center">
