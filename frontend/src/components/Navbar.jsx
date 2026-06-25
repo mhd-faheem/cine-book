@@ -5,7 +5,9 @@ const Navbar = () => {
   return (
     
         <div className='flex flex-row justify-between p-5 border border-gray-700 align-middle items-center text-white bg-black'>
-            <p className='text-3xl font-extrabold text-red-500'>CineBook</p>
+            <Link to={'/'}>
+                <p className='text-3xl font-extrabold text-red-500'>CineBook</p>
+            </Link>
             <ul className='flex gap-4'>
                 {/* Navigations */}
                 <Link to="/login">

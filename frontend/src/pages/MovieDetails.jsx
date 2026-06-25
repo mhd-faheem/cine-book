@@ -33,9 +33,9 @@ const MovieDetails = () => {
             Movie description will come here. Later this data will come from the database.
           </p>
 
-          <button className='book-now-btn'>
+          <Link to={`/movies/${id}/seats`} className='book-now-btn'>
             Book Tickets
-          </button>
+          </Link>
         </div>
       </div>
     </div>
