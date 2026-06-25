@@ -92,7 +92,7 @@ const SeatSelection = () => {
           <div className='screen flex flex-col items-center gap-1'>
 
           {/* Screen */}
-          <div className="screen-line h-1 w-70 bg-red-400 rounded-3xl"></div>
+          <div title="Theatre screen"className="screen-line h-1 w-70 bg-red-400 rounded-3xl"></div>
             <p>All eyes this way!</p>
           </div>
 
@@ -120,6 +120,7 @@ const SeatSelection = () => {
                 <button
                   onClick={() => handleSeatSelect(seat)}
                   disabled={seat.status === "booked"}
+                  title={seat.status === "booked" && "Seat is already booked!"}
                   key={seat.id}
                   className='p-4 border cursor-pointer'
                   style={{
@@ -136,9 +137,9 @@ const SeatSelection = () => {
           </div>
         </div>
           {selectedSeats.length>0 && (
-            <div className='flex flex-col justify-center items-center mt-10'>
-              <p className='text-xl'>Selected Seats: {selectedSeats.join(', ')}</p>
-              <button>Pay &#8377;{selectedSeats.length*seatPrice}</button>
+            <div className='flex flex-col justify-center items-center mt-10 gap-4'>
+              <p className='text-sm'>Selected Seats: {selectedSeats.join(', ')}</p>
+              <button className='p-3 bg-red-500 rounded text-white pay-button cursor-pointer'>Pay &#8377;{selectedSeats.length*seatPrice}</button>
             </div>
           )}
         </div>
