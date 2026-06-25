@@ -2,5 +2,16 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 20px;
+    padding: 30px 30px;
+    cursor:
 }
+
+.back-button {
+  color: #333;
+  font-weight: 600;
+}
+
+.back-button:hover {
+  color: red
+}
+
