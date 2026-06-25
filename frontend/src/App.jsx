@@ -7,6 +7,7 @@ import SignupPage from "./pages/SignupPage"
 import MovieDetails from './pages/MovieDetails'
 import MyBookings from './pages/MyBookings'
 import ProtectedRoute from "./components/ProtectedRoute";
+import SeatSelection from './pages/SeatSelection'
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
         </ProtectedRoute>
       } />
 
+      <Route path="/bookings" element={<MyBookings />} />
+      <Route path="/movies/:id/seats" element={<SeatSelection />} />
     </Routes>
   )
 }
