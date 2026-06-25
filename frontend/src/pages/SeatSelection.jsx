@@ -81,10 +81,15 @@ const SeatSelection = () => {
 
       {/* Start Main Wrapper */}
       <div className='main-wrapper'>
-        <Link to={`/movies/${id}`} className='back-button'>&larr; Back</Link>
-        <div className='flex justify-between'>
-          <p className='text-3xl mb-3'>Movie Name: Showtime</p>
-          <p>Tickets: {tickets}</p>
+        <div className="top-section p-5">
+          <Link to={`/movies/${id}`} className='back-button mb-3'>&larr; Back</Link>
+          <div className='flex justify-between mt-2 items-center'>
+            <div className='flex flex-col '>
+              <p className='text-3xl'>Movie Name</p>
+              <p className='text-gray-700'>Theatre name - Showtime</p>
+            </div>
+            <p className='font-regular'>Tickets: {tickets}</p>
+          </div>
         </div>
         
         {/* Seats UI */}
@@ -92,8 +97,8 @@ const SeatSelection = () => {
           <div className='screen flex flex-col items-center gap-1'>
 
           {/* Screen */}
-          <div title="Theatre screen"className="screen-line h-1 w-70 bg-red-400 rounded-3xl"></div>
-            <p>All eyes this way!</p>
+          <div title="Theatre screen" className="screen-line w-70 bg-red-400 rounded-3xl"></div>
+            <p className='mt-1.5'>All eyes this way!</p>
           </div>
 
           {/* Seats */}
@@ -120,14 +125,14 @@ const SeatSelection = () => {
                 <button
                   onClick={() => handleSeatSelect(seat)}
                   disabled={seat.status === "booked"}
-                  title={seat.status === "booked" && "Seat is already booked!"}
+                  title={seat.status === "booked"? "Seat is already booked!":null}
                   key={seat.id}
-                  className='p-4 border cursor-pointer'
+                  className='p-3 font-medium shadow shadow-gray-300 cursor-pointer transition-colors ease-in-out duration-100 rounded'
                   style={{
                     backgroundColor: seatBgColor,
                     color: seatTextColor,
                     cursor: seatCursor,
-                    fontSize: '20px',
+                    fontSize: '15px',
                   }}
                 >
                   {seat.id}
@@ -136,12 +141,12 @@ const SeatSelection = () => {
               })}
           </div>
         </div>
-          {selectedSeats.length>0 && (
+          {selectedSeats.length>0 ? (
             <div className='flex flex-col justify-center items-center mt-10 gap-4'>
               <p className='text-sm'>Selected Seats: {selectedSeats.join(', ')}</p>
               <button className='p-3 bg-red-500 rounded text-white pay-button cursor-pointer'>Pay &#8377;{selectedSeats.length*seatPrice}</button>
             </div>
-          )}
+          ): <p className='text-sm flex flex-col justify-center items-center mt-10 gap-4'>Your perfect view is one tap away.</p>  }
         </div>
       </div>
   )
