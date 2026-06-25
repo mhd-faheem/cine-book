@@ -9,8 +9,8 @@ const HomePage = () => {
     <div>
         {/* Navbar Component */}
         <Navbar/>
-        <div className='content-section'>
-            <p className='text-2xl font-bold mb-5'>Welcome, User</p>
+        <div className='content-section p-2'>
+            <p className='text-xl font-light mb-6'>Pick your story. We’ll save you a seat.</p>
             {/* Movie Cards */}
             <div className='movie-cards flex gap-3'>
                 {movies.map((movie) => (
