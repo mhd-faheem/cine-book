@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
+import axios from "axios";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
@@ -15,7 +16,7 @@ const SignupPage = () => {
   const confirmRef = useRef(null);
   const navigate = useNavigate()
 
- const handleSignup = (e) => {
+ const handleSignup = async (e) => {
   e.preventDefault();
 
   // reset messages first
@@ -56,13 +57,46 @@ const SignupPage = () => {
     return;
   }
 
-  // SUCCESS
-  setMessage("Account created successfully !");
+  // ✅ API CALL (this is what your task wants)
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/auth/signup`,
+      {
+        name: cleanName,
+        email: cleanEmail,
+        password,
+      }
+    );
 
-  setName("");
-  setEmail("");
-  setPassword("");
-  setConfirmPassword("");
+    console.log(response.data);
+    // alert("Signup successful!");
+    // alert("Signup successful! Please login.");
+    // navigate("/login");
+    
+
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
+    // setMessage("Signup successful! Please login.");
+    setMessage("Account created successfully! Please login. ");
+
+    // optional reset
+    setName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+
+    // optional redirect
+    // navigate("/login");
+
+  } catch (error) {
+    console.log(error.response?.data);
+
+    setError(
+      error.response?.data?.message ||
+        "Signup failed"
+    );
+  }
 };
 
   return (
