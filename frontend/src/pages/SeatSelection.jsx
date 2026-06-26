@@ -1,48 +1,59 @@
 import React, { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import '../styles/SeatSelection.css'
 import Navbar from '../components/Navbar'
 import movies from '../data/movies.js'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const SeatSelection = () => {
 
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
   const [selectedSeats, setSelectedSeats] = useState([])
-  let updatedSeats = [];
-  // let tickets = 3;
   const [tickets, setTickets] = useState(3)
+  let updatedSeats = [];
   let seatPrice = 150;
+
   // Dummy seat data
   const seats = [
-    { id: "A1", row: "A", number: 1, status: "available" },
-    { id: "A2", row: "A", number: 2, status: "booked" },
-    { id: "A3", row: "A", number: 3, status: "available" },
-    { id: "A4", row: "A", number: 4, status: "available" },
-    { id: "A5", row: "A", number: 5, status: "booked" },
-    { id: "A6", row: "A", number: 6, status: "available" },
+    { id: "A1", row: "A", number: 1, status: "available", type: "seat"},
+    { id: "A2", row: "A", number: 2, status: "booked",  type: "seat"},
+    {row:"A", type: "empty" },
+    { id: "A3", row: "A", number: 3, status: "available",  type: "seat" },
+    { id: "A4", row: "A", number: 4, status: "available",  type: "seat" },
+    { id: "A5", row: "A", number: 5, status: "booked",  type: "seat" },
+    {row:"A", type: "empty" },
+    { id: "A6", row: "A", number: 6, status: "available",  type: "seat" },
     
-    { id: "B1", row: "B", number: 1, status: "available" },
-    { id: "B2", row: "B", number: 2, status: "available" },
-    { id: "B3", row: "B", number: 3, status: "booked" },
-    { id: "B4", row: "B", number: 4, status: "available" },
-    { id: "B5", row: "B", number: 5, status: "available" },
-    { id: "B6", row: "B", number: 6, status: "available" },
+    { id: "B1", row: "B", number: 1, status: "available",  type: "seat" },
+    { id: "B2", row: "B", number: 2, status: "available",  type: "seat" },
+    { id: "B3", row: "B", number: 3, status: "booked", type: "seat" },
+    { id: "B4", row: "B", number: 4, status: "available", type: "seat" },
+    { id: "B5", row: "B", number: 5, status: "available", type: "seat"},
+    {row:"B", type: "empty" },
+    { id: "B6", row: "B", number: 6, status: "available", type: "seat"},
     
-    { id: "C1", row: "C", number: 1, status: "booked" },
-    { id: "C2", row: "C", number: 2, status: "available" },
-    { id: "C3", row: "C", number: 3, status: "available" },
-    { id: "C4", row: "C", number: 4, status: "available" },
-    { id: "C5", row: "C", number: 5, status: "booked" },
-    { id: "C6", row: "C", number: 6, status: "available" },
+    { id: "C1", row: "C", number: 1, status: "booked", type: "seat"},
+    { id: "C2", row: "C", number: 2, status: "available", type: "seat"},
+    { id: "C3", row: "C", number: 3, status: "available", type: "seat"},
+    { id: "C4", row: "C", number: 4, status: "available", type: "seat" },
+    { id: "C5", row: "C", number: 5, status: "booked", type: "seat" },
+    {row:"C", type: "empty" },
+    { id: "C6", row: "C", number: 6, status: "available", type: "seat" },
     
-    { id: "D1", row: "D", number: 1, status: "available" },
-    { id: "D2", row: "D", number: 2, status: "available" },
-    { id: "D3", row: "D", number: 3, status: "available" },
-    { id: "D4", row: "D", number: 4, status: "booked" },
-    { id: "D5", row: "D", number: 5, status: "available" },
-    { id: "D6", row: "D", number: 6, status: "available" },
+    { id: "D1", row: "D", number: 1, status: "available", type: "seat" },
+    { id: "D2", row: "D", number: 2, status: "available", type: "seat" },
+    { id: "D3", row: "D", number: 3, status: "available", type: "seat" },
+    { id: "D4", row: "D", number: 4, status: "booked", type: "seat" },
+    
+    { id: "D5", row: "D", number: 5, status: "available", type: "seat" },
+    {row:"D", type: "empty" },
+    { id: "D6", row: "D", number: 6, status: "available", type: "seat" },
   ]
   
-  const rows = ["A", "B", "C", "D"]
+  // "|" -> means blank row or passage
+  const rows = ["A", "B", "C", "|", "D"]
 
   // Extract id from URL
   let params = useParams();
@@ -68,22 +79,32 @@ const SeatSelection = () => {
 
     // Unselect Seat if already selected
     if(selectedSeats.includes(seat.id)){
-      let updatedSeats = selectedSeats.filter((selectedSeat) => {
+      updatedSeats = selectedSeats.filter((selectedSeat) => {
       return selectedSeat !== seat.id
     })
 
     setSelectedSeats(updatedSeats)
     // Add selected seats to list
     } else if (!selectedSeats.includes(seat.id) &&  selectedSeats.length<=tickets-1) {
-      let updatedSeats =  [...selectedSeats, seat.id]
+      updatedSeats =  [...selectedSeats, seat.id]
       setSelectedSeats(updatedSeats)
     } else {
       setSelectedSeats([])
     }
 
     console.log(selectedSeats)  
-
   
+  }
+  
+  // Handle Payment
+  function handlePayment() {
+    if(isAuthenticated){
+      alert("Eligible for payment. Redirecting...")
+    } else {
+      navigate("/signup")
+      alert("Please create or log in to an existing account to continue.")
+      console.log(params)
+    }
   }
   
   // Return UI
@@ -94,8 +115,8 @@ const SeatSelection = () => {
       <Navbar/>
 
       {/* Start Main Wrapper */}
-      <div className='main-wrapper'>
-        <div className="top-section p-5">
+      <div className='main-wrapper items-center'>
+        <div className="top-section p-5 w-full">
           <Link to={`/movies/${movieId}`} className='back-button'>&larr; Back</Link>
           <div className='flex justify-between mt-3 items-center'>
             <div className='flex flex-col gap-0.5 '>
@@ -111,8 +132,8 @@ const SeatSelection = () => {
         </div>
         
         {/* Seats UI */}
-        <div className='seat-ui flex flex-col justify-center align-bottom items-center gap-15 mt-10'>
-          <div className='screen flex flex-col items-center gap-1'>
+        <div className='seat-ui flex flex-col justify-center align-middle items-center gap-15 mt-10 w-3/4'>
+          <div className='screen flex flex-col items-center gap-1 align-middle'>
 
           {/* Screen */}
           <div title="Theatre screen" className="screen-line w-70 bg-red-400 rounded-3xl"></div>
@@ -124,55 +145,66 @@ const SeatSelection = () => {
             {rows.map((row) => {
               const rowSeats = seats.filter(seat => seat.row === row)
 
+              if(row === "|")
+                return (
+                  <div className='h-6'></div>
+                )
+
               return (
-                <div key={row} className='flex gap-3 items-center justify-center'>
-                  <p>{row}</p>
+                <div key={row} className='flex gap-3 items-center justify-center w-full'>
+                  <p className='row-label mr-10 font-light text-gray-600'>{row}</p>
                   {
-              // Mapping each seat from seats array
-              rowSeats.map((seat) => {
-              // Seat Styling variables
-              let seatBgColor = 'white'
-              let seatTextColor = 'black'
-              let seatCursor = 'pointer'
+                  // Mapping each seat from seats array
+                  rowSeats.map((seat) => {
+                  // Seat Styling variables
+                  let seatBgColor = 'white'
+                  let seatTextColor = 'black'
+                  let seatCursor = 'pointer'
+                  let seatOpacity = 100
 
-              if (selectedSeats.includes(seat.id)) {
-                seatBgColor = 'green'
-                seatTextColor = 'white'
-              }
+                  if (selectedSeats.includes(seat.id)) {
+                    seatBgColor = 'green'
+                    seatTextColor = 'white'
+                  }
 
-              if (seat.status === "booked") {
-                seatBgColor = 'grey'
-                seatCursor = 'not-allowed'
-              }
+                  if (seat.status === "booked") {
+                    seatBgColor = 'grey'
+                    seatCursor = 'not-allowed'
+                  }
 
-              return (
-                <button
-                  onClick={() => handleSeatSelect(seat)}
-                  disabled={seat.status === "booked"}
-                  title={seat.status === "booked"? "Seat is already booked!":null}
-                  key={seat.id}
-                  className='p-3 font-medium shadow shadow-gray-300 cursor-pointer transition-colors ease-in-out duration-100 rounded'
-                  style={{
-                    backgroundColor: seatBgColor,
-                    color: seatTextColor,
-                    cursor: seatCursor,
-                    fontSize: '15px',
-                  }}
-                >
-                  {seat.id}
-                </button>
-              )
-              })}
-                </div>
-              )
-            })}   
-            
+                  if (seat.type === "empty") {
+                    seatOpacity = 0;
+                  }
+
+                  return (
+                    <button
+                      onClick={() => handleSeatSelect(seat)}
+                      disabled={seat.status === "booked" || seat.type === "aisle"}
+                      title={seat.status === "booked"? "Seat is already booked!":null}
+                      key={seat.id}
+                      className='w-10 h-10 font-medium shadow shadow-gray-300 cursor-pointer transition-colors ease-in-out duration-100 rounded'
+                      style={{
+                        backgroundColor: seatBgColor,
+                        color: seatTextColor,
+                        cursor: seatCursor,
+                        opacity: seatOpacity,
+                        fontSize: '15px',
+                      }}
+                    >
+                      {seat.id}
+                    </button>
+                  )
+                  })}
+                    </div>
+                  )
+                })}   
+                
           </div>
         </div>
           {selectedSeats.length>0 ? (
             <div className='flex flex-col justify-center items-center mt-10 gap-4'>
               <p className='text-sm'>Selected Seats: {selectedSeats.join(', ')}</p>
-              <button className='p-3 bg-red-500 rounded text-white pay-button cursor-pointer'>Pay &#8377;{selectedSeats.length*seatPrice}</button>
+              <button className='p-3 bg-red-500 rounded text-white pay-button cursor-pointer' onClick={handlePayment}>Pay &#8377;{selectedSeats.length*seatPrice}</button>
             </div>
           ): <p className='text-sm flex flex-col justify-center items-center mt-10 gap-4'>Your perfect view is one tap away.</p>  }
         </div>
