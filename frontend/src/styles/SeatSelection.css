@@ -4,6 +4,15 @@
     gap: 10px;
 }
 
+html {
+  overflow-y: scroll;
+}
+
+/* *{
+  background-color: black;
+  color: white;
+} */
+
 .ticket-counter button{
   font-size: 22px;
   margin-left: 10px;
@@ -23,6 +32,10 @@
   box-shadow: 5px 10px 30px 3px rgba(255, 0, 0, 0.267);
   border-radius: 8px;
   height: 3px;
+}
+
+.seat-separator {
+  height: 0.1px;
 }
 
 .pay-button {

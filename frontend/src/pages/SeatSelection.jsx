@@ -7,54 +7,153 @@ import { useAuth } from '../context/AuthContext.jsx'
 
 const SeatSelection = () => {
 
-  const { user, isAuthenticated } = useAuth();
+  const {isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const [selectedSeats, setSelectedSeats] = useState([])
   const [tickets, setTickets] = useState(3)
   let updatedSeats = [];
   let seatPrice = 150;
+  let totalPrice = 0;
 
   // Dummy seat data
-  const seats = [
-    { id: "A1", row: "A", number: 1, status: "available", type: "seat"},
-    { id: "A2", row: "A", number: 2, status: "booked",  type: "seat"},
-    {row:"A", type: "empty" },
-    { id: "A3", row: "A", number: 3, status: "available",  type: "seat" },
-    { id: "A4", row: "A", number: 4, status: "available",  type: "seat" },
-    { id: "A5", row: "A", number: 5, status: "booked",  type: "seat" },
-    {row:"A", type: "empty" },
-    { id: "A6", row: "A", number: 6, status: "available",  type: "seat" },
+//   const seats = [
+//     { id: "A1", row: "A", number: 1, status: "available", type: "seat", category: "standard"},
+//     { id: "A2", row: "A", number: 2, status: "booked",  type: "seat"},
+//     {row:"A", type: "empty" },
+//     { id: "A3", row: "A", number: 3, status: "available",  type: "seat", category: "standard" },
+//     { id: "A4", row: "A", number: 4, status: "available",  type: "seat", category: "standard" },
+//     { id: "A5", row: "A", number: 5, status: "booked",  type: "seat", category: "standard" },
+//     {row:"A", type: "empty" },
+//     { id: "A6", row: "A", number: 6, status: "available",  type: "seat", category: "standard" },
+//     { id: "A7", row: "A", number: 7, status: "available",  type: "seat", category: "standard" },
     
-    { id: "B1", row: "B", number: 1, status: "available",  type: "seat" },
-    { id: "B2", row: "B", number: 2, status: "available",  type: "seat" },
-    { id: "B3", row: "B", number: 3, status: "booked", type: "seat" },
-    { id: "B4", row: "B", number: 4, status: "available", type: "seat" },
-    { id: "B5", row: "B", number: 5, status: "available", type: "seat"},
-    {row:"B", type: "empty" },
-    { id: "B6", row: "B", number: 6, status: "available", type: "seat"},
+//     { id: "B1", row: "B", number: 1, status: "available",  type: "seat", category: "standard" },
+//     { id: "B2", row: "B", number: 2, status: "available",  type: "seat", category: "standard" },
+//     { id: "B3", row: "B", number: 3, status: "booked", type: "seat", category: "standard" },
+//     { id: "B4", row: "B", number: 4, status: "available", type: "seat", category: "standard" },
+//     { id: "B5", row: "B", number: 5, status: "available", type: "seat", category: "standard" },
+//     { id: "B6", row: "B", number: 6, status: "available", type: "seat", category: "standard" },
+//     {row:"B", type: "empty" },
+//     { id: "B7", row: "B", number: 7, status: "available", type: "seat", category: "standard" },
     
-    { id: "C1", row: "C", number: 1, status: "booked", type: "seat"},
-    { id: "C2", row: "C", number: 2, status: "available", type: "seat"},
-    { id: "C3", row: "C", number: 3, status: "available", type: "seat"},
-    { id: "C4", row: "C", number: 4, status: "available", type: "seat" },
-    { id: "C5", row: "C", number: 5, status: "booked", type: "seat" },
-    {row:"C", type: "empty" },
-    { id: "C6", row: "C", number: 6, status: "available", type: "seat" },
+//     { id: "C1", row: "C", number: 1, status: "booked", type: "seat", category: "premium"},
+//     { id: "C2", row: "C", number: 2, status: "available", type: "seat", category: "premium"},
+//     { id: "C3", row: "C", number: 3, status: "available", type: "seat", category: "premium"},
+//     { id: "C4", row: "C", number: 4, status: "available", type: "seat", category: "premium" },
+//     { id: "C5", row: "C", number: 5, status: "booked", type: "seat", category: "premium" },
+//     {row:"C", type: "empty" },
+//     { id: "C6", row: "C", number: 6, status: "available", type: "seat", category: "premium" },
     
-    { id: "D1", row: "D", number: 1, status: "available", type: "seat" },
-    { id: "D2", row: "D", number: 2, status: "available", type: "seat" },
-    { id: "D3", row: "D", number: 3, status: "available", type: "seat" },
-    { id: "D4", row: "D", number: 4, status: "booked", type: "seat" },
+//     { id: "D1", row: "D", number: 1, status: "available", type: "seat", category: "sofa" },
+//     { id: "D2", row: "D", number: 2, status: "available", type: "seat", category: "sofa" },
+//     { id: "D3", row: "D", number: 3, status: "available", type: "seat", category: "sofa" },
+//     { id: "D4", row: "D", number: 4, status: "booked", type: "seat", category: "sofa" },
     
-    { id: "D5", row: "D", number: 5, status: "available", type: "seat" },
-    {row:"D", type: "empty" },
-    { id: "D6", row: "D", number: 6, status: "available", type: "seat" },
-  ]
+//     { id: "D5", row: "D", number: 5, status: "available", type: "seat" },
+//     {row:"D", type: "empty" },
+//     { id: "D6", row: "D", number: 6, status: "available", type: "seat" },
+//   ]
   
-  // "|" -> means blank row or passage
-  const rows = ["A", "B", "C", "|", "D"]
+//   // "blank" -> means passage or blank row
+//   const theatreLayout = [
+//     { id: 1, type: "separator", label: "Standard", price: 150 },
+//     { id: 2, type: "row", row: "A" },
+//     { id: 3, type: "row", row: "B" },
+//     { id: 4, type: "separator", label: "Premium", price: 220 },
+//     { id: 5, type: "row", row: "C" },
+//     { id: 6, type: "blank"},
+//     { id: 7, type: "separator", label: "Sofa", price: 300 },
+//     { id: 8, type: "row", row: "D" },
+// ]
 
+const seats = [
+  { id: "A1", row: "A", number: 1, status: "available", type: "seat", category: "standard" },
+  { id: "A2", row: "A", number: 2, status: "booked", type: "seat", category: "standard" },
+  { row: "A", type: "empty" },
+  { id: "A3", row: "A", number: 3, status: "available", type: "seat", category: "standard" },
+  { id: "A4", row: "A", number: 4, status: "available", type: "seat", category: "standard" },
+  { id: "A5", row: "A", number: 5, status: "booked", type: "seat", category: "standard" },
+  { row: "A", type: "empty" },
+  { id: "A6", row: "A", number: 6, status: "available", type: "seat", category: "standard" },
+  { id: "A7", row: "A", number: 7, status: "available", type: "seat", category: "standard" },
+
+  { id: "B1", row: "B", number: 1, status: "available", type: "seat", category: "standard" },
+  { id: "B2", row: "B", number: 2, status: "available", type: "seat", category: "standard" },
+  { row: "B", type: "empty" },
+  { id: "B3", row: "B", number: 3, status: "booked", type: "seat", category: "standard" },
+  { id: "B4", row: "B", number: 4, status: "available", type: "seat", category: "standard" },
+  { id: "B5", row: "B", number: 5, status: "available", type: "seat", category: "standard" },
+  { id: "B6", row: "B", number: 6, status: "available", type: "seat", category: "standard" },
+  { row: "B", type: "empty" },
+  { id: "B7", row: "B", number: 7, status: "available", type: "seat", category: "standard" },
+  { id: "B8", row: "B", number: 8, status: "booked", type: "seat", category: "standard" },
+
+  { id: "C1", row: "C", number: 1, status: "booked", type: "seat", category: "premium" },
+  { id: "C2", row: "C", number: 2, status: "available", type: "seat", category: "premium" },
+  { id: "C3", row: "C", number: 3, status: "available", type: "seat", category: "premium" },
+  { row: "C", type: "empty" },
+  { id: "C4", row: "C", number: 4, status: "available", type: "seat", category: "premium" },
+  { id: "C5", row: "C", number: 5, status: "booked", type: "seat", category: "premium" },
+  { id: "C6", row: "C", number: 6, status: "available", type: "seat", category: "premium" },
+  { row: "C", type: "empty" },
+  { id: "C7", row: "C", number: 7, status: "available", type: "seat", category: "premium" },
+  { id: "C8", row: "C", number: 8, status: "available", type: "seat", category: "premium" },
+
+  { id: "D1", row: "D", number: 1, status: "available", type: "seat", category: "premium" },
+  { id: "D2", row: "D", number: 2, status: "available", type: "seat", category: "premium" },
+  { id: "D3", row: "D", number: 3, status: "booked", type: "seat", category: "premium" },
+  { id: "D4", row: "D", number: 4, status: "available", type: "seat", category: "premium" },
+  { id: "D5", row: "D", number: 5, status: "available", type: "seat", category: "premium" },
+  { id: "D6", row: "D", number: 6, status: "available", type: "seat", category: "premium" },
+  { id: "D7", row: "D", number: 7, status: "available", type: "seat", category: "premium" },
+  { id: "D8", row: "D", number: 8, status: "available", type: "seat", category: "premium" },
+
+  { id: "E1", row: "E", number: 1, status: "available", type: "seat", category: "premium" },
+  { id: "E2", row: "E", number: 2, status: "booked", type: "seat", category: "premium" },
+  { row: "E", type: "empty" },
+  { id: "E3", row: "E", number: 3, status: "available", type: "seat", category: "premium" },
+  { id: "E4", row: "E", number: 4, status: "available", type: "seat", category: "premium" },
+  { id: "E5", row: "E", number: 5, status: "available", type: "seat", category: "premium" },
+  { row: "E", type: "empty" },
+  { id: "E6", row: "E", number: 6, status: "booked", type: "seat", category: "premium" },
+  { id: "E7", row: "E", number: 7, status: "available", type: "seat", category: "premium" },
+
+  { id: "F1", row: "F", number: 1, status: "available", type: "seat", category: "sofa" },
+  { id: "F2", row: "F", number: 2, status: "available", type: "seat", category: "sofa" },
+  { row: "F", type: "empty" },
+  { id: "F3", row: "F", number: 3, status: "booked", type: "seat", category: "sofa" },
+  { id: "F4", row: "F", number: 4, status: "available", type: "seat", category: "sofa" },
+  { row: "F", type: "empty" },
+  { id: "F5", row: "F", number: 5, status: "available", type: "seat", category: "sofa" },
+  { id: "F6", row: "F", number: 6, status: "available", type: "seat", category: "sofa" },
+
+  { row: "G", type: "empty" },
+  { id: "G1", row: "G", number: 1, status: "available", type: "seat", category: "sofa" },
+  { id: "G2", row: "G", number: 2, status: "booked", type: "seat", category: "sofa" },
+  { row: "G", type: "empty" },
+  { id: "G3", row: "G", number: 3, status: "available", type: "seat", category: "sofa" },
+  { id: "G4", row: "G", number: 4, status: "available", type: "seat", category: "sofa" },
+]
+
+const theatreLayout = [
+  { id: 1, type: "separator", label: "Standard", price: 150 },
+  { id: 2, type: "row", row: "A" },
+  { id: 3, type: "row", row: "B" },
+
+  { id: 4, type: "blank" },
+
+  { id: 5, type: "separator", label: "Premium", price: 220 },
+  { id: 6, type: "row", row: "C" },
+  { id: 7, type: "row", row: "D" },
+  { id: 8, type: "row", row: "E" },
+
+  { id: 9, type: "blank" },
+
+  { id: 10, type: "separator", label: "Sofa", price: 300 },
+  { id: 11, type: "row", row: "F" },
+  { id: 12, type: "row", row: "G" },
+]
   // Extract id from URL
   let params = useParams();
   let movieId = params.id;
@@ -72,38 +171,43 @@ const SeatSelection = () => {
       </div>
     )
   }
-
+  
   function handleSeatSelect(seat){
     console.log(`seat clicked: ${seat.id}`);
     console.log(selectedSeats.includes(seat.id))
-
+    
     // Unselect Seat if already selected
     if(selectedSeats.includes(seat.id)){
       updatedSeats = selectedSeats.filter((selectedSeat) => {
-      return selectedSeat !== seat.id
-    })
-
-    setSelectedSeats(updatedSeats)
-    // Add selected seats to list
+        return selectedSeat !== seat.id
+      })
+      
+      setSelectedSeats(updatedSeats)
+      // Add selected seats to list
     } else if (!selectedSeats.includes(seat.id) &&  selectedSeats.length<=tickets-1) {
       updatedSeats =  [...selectedSeats, seat.id]
       setSelectedSeats(updatedSeats)
     } else {
-      setSelectedSeats([])
+      setSelectedSeats([seat.id])
     }
-
+    
     console.log(selectedSeats)  
+    
+  }
   
+  function calculateTotal(){
+    totalPrice = selectedSeats.length*seatPrice
+    return (
+        <p>&#8377;{totalPrice}</p>
+      )
   }
   
   // Handle Payment
   function handlePayment() {
-    if(isAuthenticated){
-      alert("Eligible for payment. Redirecting...")
+    if(tickets===selectedSeats.length){
+      navigate("/payment")
     } else {
-      navigate("/signup")
-      alert("Please create or log in to an existing account to continue.")
-      console.log(params)
+      alert(`Please select exactly ${tickets} Tickets`)
     }
   }
   
@@ -111,7 +215,7 @@ const SeatSelection = () => {
   return (
     <div>
       
-      {/* Insert Navbar Component */}
+      {/* Navbar Component */}
       <Navbar/>
 
       {/* Start Main Wrapper */}
@@ -132,27 +236,44 @@ const SeatSelection = () => {
         </div>
         
         {/* Seats UI */}
-        <div className='seat-ui flex flex-col justify-center align-middle items-center gap-15 mt-10 w-3/4'>
+        <div className='seat-ui flex flex-col justify-center align-middle items-center mt-10 mb-12 w-3/4'>
           <div className='screen flex flex-col items-center gap-1 align-middle'>
 
           {/* Screen */}
           <div title="Theatre screen" className="screen-line w-70 bg-red-400 rounded-3xl"></div>
-            <p className='mt-1.5'>All eyes this way!</p>
+            <p className='mt-1.5 mb-9'>All eyes this way!</p>
           </div>
+
+            <div className='flex flex-col justify-center items-center mb-5'>
+              {selectedSeats.length>0?(
+              <p className='text-sm'>Selected Seats: {selectedSeats.join(', ')}</p>):<p className='text-sm'>Your perfect view is one tap away!</p>}
+            </div>
 
           {/* Seats */}
           <div className="seats flex flex-col gap-3">
-            {rows.map((row) => {
-              const rowSeats = seats.filter(seat => seat.row === row)
+            {theatreLayout.map((item) => {
+              console.log(item)
+              const rowSeats = seats.filter(seat => seat.row === item.row)
 
-              if(row === "|")
+              // Blank row ui
+              if(item.type === "blank")
                 return (
                   <div className='h-6'></div>
                 )
 
+              if(item.type === 'separator')
+                return (
+                  <div className='mt-3'>
+                    <p>{item.label} - &#8377;{item.price}</p>
+                    <div className='w-full seat-separator bg-gray-400'></div>
+                  </div>
+                )
+
+              // Seat row ui
+              if(item.type === "row"){
               return (
-                <div key={row} className='flex gap-3 items-center justify-center w-full'>
-                  <p className='row-label mr-10 font-light text-gray-600'>{row}</p>
+                <div key={item.id} className='flex gap-3 items-center justify-center w-full'>
+                  <p className='row-label mr-10 font-light text-gray-600'>{item.row}</p>
                   {
                   // Mapping each seat from seats array
                   rowSeats.map((seat) => {
@@ -162,16 +283,19 @@ const SeatSelection = () => {
                   let seatCursor = 'pointer'
                   let seatOpacity = 100
 
+                  // Selected Seat style
                   if (selectedSeats.includes(seat.id)) {
                     seatBgColor = 'green'
                     seatTextColor = 'white'
                   }
 
+                  // Booked seat style
                   if (seat.status === "booked") {
                     seatBgColor = 'grey'
                     seatCursor = 'not-allowed'
                   }
 
+                  // Empty seat style
                   if (seat.type === "empty") {
                     seatOpacity = 0;
                   }
@@ -196,18 +320,13 @@ const SeatSelection = () => {
                   )
                   })}
                     </div>
-                  )
+                  )}
                 })}   
                 
           </div>
+         </div>
         </div>
-          {selectedSeats.length>0 ? (
-            <div className='flex flex-col justify-center items-center mt-10 gap-4'>
-              <p className='text-sm'>Selected Seats: {selectedSeats.join(', ')}</p>
-              <button className='p-3 bg-red-500 rounded text-white pay-button cursor-pointer' onClick={handlePayment}>Pay &#8377;{selectedSeats.length*seatPrice}</button>
-            </div>
-          ): <p className='text-sm flex flex-col justify-center items-center mt-10 gap-4'>Your perfect view is one tap away.</p>  }
-        </div>
+        {selectedSeats.length>0 ?<button className='flex items-center align-middle justify-center gap-2 p-3 w-1/3 bg-red-500 rounded text-white pay-button cursor-pointer left-1/2 -translate-x-1/2 sticky bottom-5' onClick={handlePayment}>Pay{calculateTotal()}</button>: null}
       </div>
   )
 }
