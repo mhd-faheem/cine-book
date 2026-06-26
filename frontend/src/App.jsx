@@ -25,7 +25,7 @@ function App() {
       } />
       <Route path="/bookings" element={<MyBookings />} />
       <Route path="/movies/:id/seats" element={<SeatSelection />} />
-      <Route path="/payment" element={<PaymentPage/>}/>
+      <Route path="/movies/:id/seats/payment" element={<PaymentPage/>}/>
     </Routes>
   )
 }
