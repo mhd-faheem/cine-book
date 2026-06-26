@@ -203,6 +203,15 @@ const theatreLayout = [
   
   // Handle Payment
   function handlePayment() {
+
+    // Forces guest accounts to login/signup before seat booking
+    if (!isAuthenticated) {
+      sessionStorage.setItem("redirectAfterLogin", `/movies/${movieId}/seats`)
+      alert("Please login or signup before you book your seats.")
+      navigate("/login")
+      return
+    }
+
     if(tickets===selectedSeats.length){
       navigate(`/movies/${movieId}/seats/payment`, {
         state: {
