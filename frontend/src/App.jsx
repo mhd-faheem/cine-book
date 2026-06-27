@@ -20,9 +20,9 @@ function App() {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/movies/:id" element={<MovieDetails />} />
       <Route path="/bookings" element={
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <MyBookings />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/bookings" element={<MyBookings />} />
       <Route path="/movies/:id/seats" element={<SeatSelection />} />
