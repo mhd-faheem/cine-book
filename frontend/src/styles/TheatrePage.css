@@ -116,3 +116,36 @@
   background: #333;
   border-color: #777;
 }
+
+.date-selector {
+  display: flex;
+  gap: 12px;
+  margin: 25px 0;
+  overflow-x: auto;
+}
+
+.date-btn {
+  background: #1e1e1e;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 12px;
+  padding: 10px 15px;
+  cursor: pointer;
+  min-width: 70px;
+  transition: 0.3s;
+}
+
+.date-btn:hover {
+  border-color: #e50914;
+}
+
+.active-date {
+  background: #e50914;
+  color: white;
+  border-color: #e50914;
+}
+
+.date-btn h3 {
+  margin: 5px 0;
+  font-size: 20px;
+}

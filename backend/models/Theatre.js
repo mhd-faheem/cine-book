@@ -96,6 +96,12 @@ const theatreSchema = new mongoose.Schema(
 
     location: String,
 
+      availableDates: [
+    {
+      type: String,
+    },
+  ],
+
     screens: [screenSchema],
   },
   {
