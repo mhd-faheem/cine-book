@@ -24,7 +24,6 @@ const SeatSelection = () => {
 
   const [tickets, setTickets] = useState(3)
   let updatedSeats = [];
-  let seatPrice = 150;
   let totalPrice = 0;
 
   // Dummy seat data
@@ -125,14 +124,21 @@ const seats = [
   { id: "F1", row: "F", number: 1, status: "available", type: "seat", category: "sofa" },
   { id: "F2", row: "F", number: 2, status: "available", type: "seat", category: "sofa" },
   { id: "F3", row: "F", number: 3, status: "booked", type: "seat", category: "sofa" },
-  { id: "F4", row: "F", number: 4, status: "available", type: "seat", category: "sofa" },
-  { id: "F5", row: "F", number: 5, status: "available", type: "seat", category: "sofa" },
-  { id: "F6", row: "F", number: 6, status: "available", type: "seat", category: "sofa" },
+  { id: "F4", row: "F", number: 4, status: "booked", type: "seat", category: "sofa" },
+  { id: "F5", row: "F", number: 5, status: "booked", type: "seat", category: "sofa" },
+  { id: "F6", row: "F", number: 6, status: "booked", type: "seat", category: "sofa" },
 
   { id: "G1", row: "G", number: 1, status: "available", type: "seat", category: "sofa" },
   { id: "G2", row: "G", number: 2, status: "booked", type: "seat", category: "sofa" },
   { id: "G3", row: "G", number: 3, status: "available", type: "seat", category: "sofa" },
   { id: "G4", row: "G", number: 4, status: "available", type: "seat", category: "sofa" },
+]
+
+const seatPrices = [
+  
+  { category:'standard', price:150},
+  { category:'premium', price:220},
+  { category:'sofa', price:300},
 ]
 
 const theatreLayout = [
@@ -194,13 +200,27 @@ const theatreLayout = [
     
   }
   
-  function calculateTotal(){
-    totalPrice = selectedSeats.length*seatPrice
-    return (
-        <p>&#8377;{totalPrice}</p>
+    function calculateTotal() {
+      const total = selectedSeats.reduce((sum, seatId) => {
+        const seat = seats.find((seat) => seat.id === seatId)
+
+        const seatPrice = seatPrices.find((item) => {
+          return item.category === seat.category
+        }).price
+        
+        console.log(seatPrice)
+
+        totalPrice = sum + seatPrice
+
+        return totalPrice
+      }, 0)
+
+      return (
+        <div>
+          <p>&#8377;{total}</p>
+        </div>
       )
-  }
-  
+    }  
   // Handle Payment
   function handlePayment() {
 
@@ -210,7 +230,7 @@ const theatreLayout = [
       alert("Please login or signup before you book your seats.")
       navigate("/login")
       return
-    }
+    }    
 
     if(tickets===selectedSeats.length){
       navigate(`/movies/${movieId}/seats/payment`, {
