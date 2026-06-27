@@ -1,74 +1,112 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import API from "../api/api";
+import Navbar from "../components/Navbar";
 import "../styles/TheatrePage.css";
 
-const TheatrePage = () => {
-  const { id } = useParams(); // movieId from route
 
+const TheatrePage = () => {
+  const { id } = useParams();
+
+  const [movie, setMovie] = useState(null);
   const [theatres, setTheatres] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTheatres = async () => {
+    const fetchData = async () => {
       try {
-        const res = await API.get(`/theatres/movie/${id}`);
-        setTheatres(res.data);
+        const movieRes = await API.get(`/movies/${id}`);
+        setMovie(movieRes.data);
+
+        const theatreRes = await API.get(`/theatres/movie/${id}`);
+        setTheatres(theatreRes.data);
       } catch (err) {
-        console.log("Error fetching theatres:", err);
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTheatres();
+    fetchData();
   }, [id]);
 
   if (loading) {
-    return <h2 className="loading">Loading theatres...</h2>;
+    return (
+      <div className="theatre-page">
+        <Navbar />
+        <h2>Loading...</h2>
+      </div>
+    );
+  }
+
+  if (!movie) {
+    return (
+      <div className="theatre-page">
+        <Navbar />
+        <h2>Movie not found</h2>
+      </div>
+    );
   }
 
   return (
     <div className="theatre-page">
+      <Navbar />
 
-      <h1 className="page-title">Choose Your Cinema</h1>
+      <div className="theatre-container">
 
-      <div className="theatre-grid">
+        <Link to={`/movies/${movie._id}`} className="back-btn">
+          ← Back
+        </Link>
 
-        {theatres.length === 0 ? (
-          <p className="no-data">No theatres available</p>
-        ) : (
-          theatres.map((t) => (
-            <div className="theatre-card" key={t._id}>
+        <h1 className="movie-title">
+          {movie.title}
+        </h1>
 
-              <div className="theatre-header">
-                <h2>{t.name}</h2>
-                <span className="format">{t.format}</span>
-              </div>
+        <div className="theatre-list">
 
-              <p className="location">📍 {t.location}</p>
-              <p className="screen">Screen: {t.screen}</p>
+          {theatres.length === 0 ? (
+            <h3>No theatres available.</h3>
+          ) : (
+            theatres.map((theatre) => (
+              <div className="theatre-card" key={theatre._id}>
 
-              <div className="showtimes">
-                {["10:30 AM", "1:30 PM", "4:30 PM", "7:30 PM"].map((time) => (
-                  <button
-                    key={time}
-                    className="time-btn"
-                    onClick={() =>
-                      console.log("Selected:", t.name, time)
-                    }
-                  >
-                    {time}
-                  </button>
+                <h2>{theatre.name}</h2>
+
+                <p>📍 {theatre.location}</p>
+
+                <p>{theatre.city}</p>
+
+                {theatre.screens.map((screen) => (
+                  <div key={screen._id} className="screen-section">
+
+                    <h4>{screen.name}</h4>
+<div className="showtimes">
+  {screen.shows.map((time) => (
+    <button
+      key={time}
+      className="show-btn"
+      onClick={() =>
+        alert(`Selected ${theatre.name}\n${screen.name}\n${time}`)
+      }
+    >
+      {time}
+    </button>
+  ))}
+</div>
+
+                  </div>
                 ))}
-              </div>
 
-            </div>
-          ))
-        )}
+              </div>
+            ))
+          )}
+
+        </div>
 
       </div>
     </div>
+
+    
   );
 };
 

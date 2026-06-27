@@ -15,8 +15,11 @@ app.use(cors());
 
 app.use(express.json());
 
+const theatreRoutes = require("./routes/theatreRoutes");
+
 app.use("/api/movies", movieRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/theatres",theatreRoutes);
 
 app.get("/", (req, res) => {
   res.send("CineBook API is running");
