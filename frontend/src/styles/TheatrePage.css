@@ -1,0 +1,118 @@
+/* TheatrePage.css */
+
+.theatre-page {
+  min-height: 100vh;
+  background: #0f0f0f;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+/* container */
+.theatre-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Back button */
+.back-btn {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.back-btn:hover {
+  opacity: 1;
+}
+
+/* Movie title */
+.movie-title {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+/* Date selector */
+.date-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.date-btn {
+  padding: 8px 14px;
+  border: 1px solid #444;
+  background: transparent;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.date-btn:hover {
+  background: #222;
+}
+
+.date-btn.active {
+  background: #e50914;
+  border-color: #e50914;
+}
+
+/* Theatre list */
+.theatre-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Theatre card */
+.theatre-card {
+  background: #1c1c1c;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #2a2a2a;
+  transition: 0.2s;
+}
+
+.theatre-card:hover {
+  transform: scale(1.01);
+  border-color: #444;
+}
+
+.theatre-card h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.theatre-card p {
+  margin: 4px 0;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* Showtimes */
+.showtimes {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.show-btn {
+  padding: 6px 12px;
+  border: 1px solid #555;
+  background: transparent;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.show-btn:hover {
+  background: #333;
+  border-color: #777;
+}
