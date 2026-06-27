@@ -42,12 +42,23 @@ const LoginPage = () => {
   
     setMessage("Login successful! Redirecting...");
 
+    
+
+
+
     setEmail("");
     setPassword("");
 
     setTimeout(() => {
-  navigate("/");
-}, 1000);
+
+    const redirectPath = sessionStorage.getItem("redirectAfterLogin")
+
+    if (redirectPath) {
+      sessionStorage.removeItem("redirectAfterLogin")
+      navigate(redirectPath)
+    } else {
+      navigate("/")
+    }}, 1000);
     // navigate("/");
 
   } catch (error) {
