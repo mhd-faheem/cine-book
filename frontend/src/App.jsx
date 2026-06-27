@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import SeatSelection from './pages/SeatSelection'
 import PaymentPage from './pages/PaymentPage'
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminMovies from "./pages/AdminMovies";
 
 function App() {
   return (
@@ -31,8 +32,15 @@ function App() {
         <ProtectedRoute adminOnly={true}>
             <AdminDashboard />
         </ProtectedRoute>
-    }
-/>
+      }
+      />
+
+      <Route path="/admin/movies" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminMovies />
+        </ProtectedRoute>
+        }
+      />
     </Routes>
   )
 }

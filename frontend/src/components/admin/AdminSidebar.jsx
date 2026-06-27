@@ -1,34 +1,43 @@
+import { NavLink } from "react-router-dom";
+
 const AdminSidebar = () => {
+  const linkClass = ({ isActive }) =>
+    `block px-4 py-2 rounded-lg ${
+      isActive
+        ? "bg-red-600 text-white"
+        : "hover:bg-zinc-800 text-white"
+    }`;
+
   return (
-    <aside className="w-64 bg-zinc-900 text-white min-h-[calc(100vh-64px)] border-r border-zinc-800">
-      <ul className="p-4 space-y-3">
-        <li className="bg-red-600 px-4 py-2 rounded-lg font-medium">
-          Dashboard
-        </li>
+  <aside className="w-64 bg-zinc-900 text-white min-h-[calc(100vh-64px)] border-r border-zinc-800">
+    <nav className="p-4 space-y-3">
 
-        <li className="px-4 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
-          Movies
-        </li>
+      <NavLink
+        to="/admin"
+        end
+        className={linkClass}
+      >
+        Dashboard
+      </NavLink>
 
-        <li className="px-4 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
-          Bookings
-        </li>
+      <NavLink
+        to="/admin/movies"
+        className={linkClass}
+      >
+        Movies
+      </NavLink>
 
-        <li className="px-4 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
-          Theaters
-        </li>
+      <div className="px-4 py-2 rounded-lg text-gray-500 cursor-not-allowed">
+        Bookings
+      </div>
 
+      <div className="px-4 py-2 rounded-lg text-gray-500 cursor-not-allowed">
+        Theaters
+      </div>
 
-        <li className="px-4 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
-          Users
-        </li>
-
-        <li className="px-4 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
-          Settings
-        </li>
-      </ul>
-    </aside>
-  );
+    </nav>
+  </aside>
+);
 };
 
 export default AdminSidebar;
