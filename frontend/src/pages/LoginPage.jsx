@@ -50,15 +50,17 @@ const LoginPage = () => {
     setPassword("");
 
     setTimeout(() => {
+  const redirectPath = sessionStorage.getItem("redirectAfterLogin");
 
-    const redirectPath = sessionStorage.getItem("redirectAfterLogin")
-
-    if (redirectPath) {
-      sessionStorage.removeItem("redirectAfterLogin")
-      navigate(redirectPath)
-    } else {
-      navigate("/")
-    }}, 1000);
+  if (redirectPath) {
+    sessionStorage.removeItem("redirectAfterLogin");
+    navigate(redirectPath);
+  } else if (response.data.user.role === "admin") {
+    navigate("/admin");
+  } else {
+    navigate("/");
+  }
+}, 1000);
     // navigate("/");
 
   } catch (error) {
