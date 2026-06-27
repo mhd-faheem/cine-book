@@ -32,15 +32,6 @@ const movies = [
     rating: 8.5,
     image: spidermanImg,
   },
-  {
-    id: 4,
-    title: "Goutham",
-    year: 2019,
-    genres: ["Drama", "Thriller"],
-    director: "Bong Joon-ho",
-    rating: 8.5,
-    image: spidermanImg,
-  }
 ];
 
 export default movies
