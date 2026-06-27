@@ -2,45 +2,31 @@ import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import { Link } from 'react-router-dom'
 import InfoIcon from "@mui/icons-material/InfoOutlined"
+
 const MyBookings = () => { 
-  const [bookings, setBookings] = useState([
-    {
-      id: 1,
-      movieName: "Spider-Man: No Way Home",
-      theatreName: "K Cinemas",
-      screen: "Screen 1",
-      date: "2026-06-28",
-      time: "7:30 PM",
-      seats: ["C2", "C3"],
-      totalAmount: 470,
-      paymentStatus: "paid",
-      bookingStatus: "confirmed",
-    },
-    {
-      id: 2,
-      movieName: "Inception",
-      theatreName: "Showtime",
-      screen: "Screen 2",
-      date: "2026-06-30",
-      time: "9:15 PM",
-      seats: ["D4", "D5", "D6"],
-      totalAmount: 720,
-      paymentStatus: "paid",
-      bookingStatus: "confirmed",
-    },
-    {
-      id: 3,
-      movieName: "Aavesham",
-      theatreName: "City Cineplex",
-      screen: "Screen 1",
-      date: "2026-07-02",
-      time: "6:00 PM",
-      seats: ["B1", "B2"],
-      totalAmount: 330,
-      paymentStatus: "paid",
-      bookingStatus: "cancelled",
-    },
-  ])
+  const [bookings, setBookings] = useState(() => {
+    const savedBookings = sessionStorage.getItem("bookings")
+    return savedBookings ? JSON.parse(savedBookings) : []
+  })
+
+  if(bookings.length === 0){
+    return (
+      <div>
+      <Navbar/>
+      <div className="flex flex-col items-center justify-center mt-20 text-center">
+                  <Link to={`/`} className='back-button' onClick={() => sessionStorage.removeItem("selectedSeats")}>&larr; Back to home</Link>
+        
+    <h2 className="text-2xl font-bold text-gray-800">
+      No bookings yet
+    </h2>
+    <p className="text-gray-500 mt-2">
+      Your booked movie tickets will appear here once you complete a payment.
+    </p>
+  </div>
+      </div>
+      
+    )
+  }
 
   function handleCancelBooking(bookingId) {
     const confirmCancel = window.confirm(
@@ -63,6 +49,7 @@ const MyBookings = () => {
   })
 
   setBookings(updatedBookings)
+  sessionStorage.setItem("bookings", JSON.stringify(updatedBookings))
   }
 
   return (
@@ -79,16 +66,16 @@ const MyBookings = () => {
           <div className='flex gap-5'>
             {bookings.map((booking) => {
               return (
-                <div className='shadow-[0_6px_20px_rgba(0,0,0,0.20)] border border-gray-300  p-5 rounded-xl' key={booking.id}>
-                    <h2>{booking.movieName}</h2>
-                        <p>{booking.theatreName}</p>
-                        <p>{booking.date} at {booking.time}</p>
+                <div className='shadow-[0_6px_20px_rgba(0,0,0,0.20)] border border-gray-300  p-5 rounded-xl min-w-80' key={booking.id}>
+                        <h2>Movie: {booking.movieName}</h2>
+                        <p>Theatre: {booking.theatreName}</p>
+                        <p>Date: dd-mm-yyyy at 00:00 am</p>
                         <p>Seats: {booking.seats.join(", ")}</p>
                         <p>Status: <span className={booking.bookingStatus === "confirmed"? "text-green-500":"text-red-500"}>{booking.bookingStatus}</span></p>
-                        <p>Total: ₹{booking.totalAmount}</p>  
+                        <p>Amount Paid: ₹{booking.totalAmount}</p>  
                         <button className={
                           booking.bookingStatus === 'confirmed'?
-                          "px-3 py-2 mt-2 bg-red-500 text-white cursor-pointer rounded-xl":"p-2 bg-red-200 rounded-xl mt-2 cursor-not-allowed text-white"}
+                          "px-3 py-2 mt-3 bg-red-500 text-white cursor-pointer rounded-xl":"p-2 bg-red-200 rounded-xl mt-2 cursor-not-allowed text-white"}
                           onClick={() => handleCancelBooking(booking.id)}
                         >Cancel Booking</button>              
                   </div>

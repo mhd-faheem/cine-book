@@ -212,7 +212,7 @@ const theatreLayout = [
 
         totalPrice = sum + seatPrice
 
-        return totalPrice
+        return totalPrice 
       }, 0)
 
       return (

@@ -1,11 +1,12 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+
 
 const PaymentPage = () => {
   const location = useLocation()
   const bookingData = location.state
-  
+  const navigate = useNavigate()
   const params = useParams()
   let movieId = params.id
 
@@ -27,13 +28,32 @@ const PaymentPage = () => {
   const theatreName = bookingData.theatreName
   const selectedSeats = bookingData.selectedSeats
   const totalPrice = bookingData.totalPrice
-  const convFee = totalPrice * 2.7/100
+const convFee = Number((totalPrice * 2.7 / 100).toFixed(2))
   const finalPrice = totalPrice + convFee
 
   function handleConfirmPayment() {
-    console.log("Booking confirmed:", bookingData)
-  }
+    const newBooking = {
+      id: Date.now(),
+      movieName: bookingData.movieName,
+      theatreName: bookingData.theatreName,
+      seats: bookingData.selectedSeats,
+      totalAmount: bookingData.totalPrice,
+      paymentStatus: "paid",
+      bookingStatus: "confirmed",
+    }
 
+    const oldBookings = JSON.parse(sessionStorage.getItem("bookings")) || []
+
+    const updatedBookings = [...oldBookings, newBooking]
+
+    sessionStorage.setItem("bookings", JSON.stringify(updatedBookings))
+
+    alert('Payment successful! Booking confirmed.')
+    sessionStorage.removeItem("selectedSeats")
+
+    navigate("/")
+
+  }
 
   console.log(bookingData)
   return (
