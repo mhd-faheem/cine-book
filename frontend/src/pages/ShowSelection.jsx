@@ -1,10 +1,11 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
 const ShowSelection = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [movie, setMovie] = useState(null);
   const [shows, setShows] = useState([]);
@@ -39,6 +40,45 @@ const ShowSelection = () => {
   const filteredShows = shows.filter((show) => {
     return show.date === selectedDate;
   });
+
+  const groupedShows = filteredShows.reduce((groups, show) => {
+    const groupKey = `${show.theatre?._id}-${show.screen}`;
+
+    if (!groups[groupKey]) {
+      groups[groupKey] = {
+        theatre: show.theatre,
+        screen: show.screen,
+        shows: [],
+      };
+    }
+
+    groups[groupKey].shows.push(show);
+
+    return groups;
+  }, {});
+
+  const showGroups = Object.values(groupedShows);
+
+  const handleSelectSeats = (show) => {
+    const ticketInput = window.prompt("How many tickets do you want?", "1");
+    const ticketCount = Number(ticketInput);
+
+    if (!ticketInput) {
+      return;
+    }
+
+    if (!ticketCount || ticketCount < 1 || ticketCount > 10) {
+      alert("Please enter a ticket count between 1 and 10.");
+      return;
+    }
+
+    navigate(`/movies/${id}/seats`, {
+      state: {
+        show,
+        tickets: ticketCount,
+      },
+    });
+  };
 
   if (!movie) {
     return (
@@ -86,28 +126,32 @@ const ShowSelection = () => {
             </div>
 
             <div className="mt-8 flex flex-col gap-4">
-              {filteredShows.map((show) => (
+              {showGroups.map((group) => (
                 <div
-                  key={show._id}
+                  key={`${group.theatre?._id}-${group.screen}`}
                   className="border border-gray-300 rounded-xl p-5 shadow-[0_6px_20px_rgba(0,0,0,0.08)]"
                 >
                   <p className="text-xl font-semibold">
-                    {show.theatre?.name}
+                    {group.theatre?.name}
                   </p>
                   <p className="text-gray-600">
-                    {show.theatre?.location}, {show.theatre?.city}
+                    {group.theatre?.location}, {group.theatre?.city}
                   </p>
-                  <p className="mt-2">
-                    {show.screen} - {show.time}
+                  <p className="mt-2 text-sm text-gray-700">
+                    {group.screen}
                   </p>
 
-                  <Link
-                    to={`/movies/${id}/seats`}
-                    state={{ show }}
-                    className="inline-block mt-4 bg-red-500 text-white px-4 py-2 rounded"
-                  >
-                    Select Seats
-                  </Link>
+                  <div className="flex gap-3 mt-4 flex-wrap">
+                    {group.shows.map((show) => (
+                      <button
+                        key={show._id}
+                        onClick={() => handleSelectSeats(show)}
+                        className="border border-red-500 text-red-500 px-4 py-2 rounded cursor-pointer hover:bg-red-500 hover:text-white"
+                      >
+                        {show.time}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>

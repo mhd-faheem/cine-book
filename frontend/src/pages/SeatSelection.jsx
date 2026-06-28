@@ -13,6 +13,7 @@ const SeatSelection = () => {
   const location = useLocation();
   const movieId = params.id;
   const selectedShow = location.state?.show;
+  const selectedTicketCount = location.state?.tickets;
   const [movieData, setMovieData] = useState(null);
 
   useEffect(() => {
@@ -40,9 +41,9 @@ const SeatSelection = () => {
   }, [selectedSeats])
 
 
-  const [tickets, setTickets] = useState(3)
+  const [tickets, setTickets] = useState(selectedTicketCount || 1)
+  const [autoSelectEnabled, setAutoSelectEnabled] = useState(false)
   let updatedSeats = [];
-  let totalPrice = 0;
 
   // Dummy seat data
 //   const seats = [
@@ -178,6 +179,53 @@ const theatreLayout = [
   { id: 11, type: "row", row: "F" },
   { id: 12, type: "row", row: "G" },
 ]
+
+const activeScreen = selectedShow?.theatre?.screens?.find((screen) => {
+  return screen.name === selectedShow.screen
+})
+
+const backendSeats = activeScreen?.seats?.map((seat) => {
+  return {
+    id: seat.seatId,
+    row: seat.row,
+    number: seat.number,
+    status: selectedShow?.bookedSeats?.includes(seat.seatId)
+      ? "booked"
+      : "available",
+    type: seat.itemType,
+    category: seat.category,
+  }
+}) || []
+
+const backendLayout = activeScreen?.layout?.map((item, index) => {
+  return {
+    id: `${item.itemType}-${item.row || item.label || index}`,
+    type: item.itemType,
+    label: item.label,
+    row: item.row,
+    price: item.category ? activeScreen.prices[item.category] : undefined,
+  }
+}) || []
+
+const backendSeatPrices = activeScreen
+  ? [
+      { category: "standard", price: activeScreen.prices.standard },
+      { category: "premium", price: activeScreen.prices.premium },
+      { category: "sofa", price: activeScreen.prices.sofa },
+    ]
+  : []
+
+const displaySeats = backendSeats.length > 0 ? backendSeats : seats
+const displayTheatreLayout = backendLayout.length > 0 ? backendLayout : theatreLayout
+const displaySeatPrices = backendSeatPrices.length > 0 ? backendSeatPrices : seatPrices
+
+const totalAmount = selectedSeats.reduce((sum, seatId) => {
+  const seat = displaySeats.find((seat) => seat.id === seatId)
+  const priceItem = displaySeatPrices.find((item) => item.category === seat?.category)
+
+  return sum + (priceItem?.price || 0)
+}, 0)
+
   if(!movieData) {
     return (
       <div>
@@ -189,8 +237,40 @@ const theatreLayout = [
     )
   }
   
+  function getSequentialSeats(startSeat) {
+    const rowSeats = displaySeats.filter((seat) => {
+      return seat.row === startSeat.row
+    })
+
+    const startIndex = rowSeats.findIndex((seat) => {
+      return seat.id === startSeat.id
+    })
+
+    const seatsToSelect = []
+
+    for (let i = startIndex; i < rowSeats.length; i++) {
+      const currentSeat = rowSeats[i]
+
+      if (currentSeat.type !== "seat" || currentSeat.status === "booked") {
+        break
+      }
+
+      seatsToSelect.push(currentSeat.id)
+
+      if (seatsToSelect.length === tickets) {
+        break
+      }
+    }
+
+    return seatsToSelect
+  }
+
   function handleSeatSelect(seat){
     console.log(`seat clicked: ${seat.id}`);
+
+    if (seat.type !== "seat" || seat.status === "booked") {
+      return
+    }
     
     // Unselect Seat if already selected
     if(selectedSeats.includes(seat.id)){
@@ -200,6 +280,15 @@ const theatreLayout = [
       
       setSelectedSeats(updatedSeats)
       // Add selected seats to list
+    } else if (autoSelectEnabled) {
+      const autoSelectedSeats = getSequentialSeats(seat)
+      const seatsNeeded = tickets - selectedSeats.length
+      const newSeats = autoSelectedSeats.filter((seatId) => {
+        return !selectedSeats.includes(seatId)
+      })
+      const seatsToAdd = newSeats.slice(0, seatsNeeded)
+
+      setSelectedSeats([...selectedSeats, ...seatsToAdd])
     } else if (!selectedSeats.includes(seat.id) &&  selectedSeats.length<=tickets-1) {
       updatedSeats =  [...selectedSeats, seat.id]
       setSelectedSeats(updatedSeats)
@@ -212,23 +301,9 @@ const theatreLayout = [
   }
   
     function calculateTotal() {
-      const total = selectedSeats.reduce((sum, seatId) => {
-        const seat = seats.find((seat) => seat.id === seatId)
-
-        const seatPrice = seatPrices.find((item) => {
-          return item.category === seat.category
-        }).price
-        
-        console.log(seatPrice)
-
-        totalPrice = sum + seatPrice
-
-        return totalPrice 
-      }, 0)
-
       return (
         <div>
-          <p>&#8377;{total}</p>
+          <p>&#8377;{totalAmount}</p>
         </div>
       )
     }  
@@ -238,7 +313,6 @@ const theatreLayout = [
     // Forces guest accounts to login/signup before seat booking
     if (!isAuthenticated) {
       sessionStorage.setItem("redirectAfterLogin", `/movies/${movieId}/shows`)
-      alert("Please login or signup before you book your seats.")
       navigate("/login")
       return
     }    
@@ -250,13 +324,14 @@ const theatreLayout = [
           theatreName: selectedShow?.theatre?.name || "K Cinemas",
           showDate: selectedShow?.date,
           showTime: selectedShow?.time,
+          showId: selectedShow?._id,
           screen: selectedShow?.screen,
           selectedSeats: selectedSeats,
-          totalPrice: totalPrice,
+          totalPrice: totalAmount,
         }
       })
     } else {
-      alert(`Please select exactly ${tickets} Tickets`)
+      return
     }
   }
   
@@ -287,6 +362,16 @@ const theatreLayout = [
               <button onClick={() => tickets>0?setTickets(tickets-1):null}>-</button>
             </div>
           </div>
+          <div className='flex justify-end mt-4'>
+            <label className='flex items-center gap-2 text-sm cursor-pointer'>
+              <input
+                type="checkbox"
+                checked={autoSelectEnabled}
+                onChange={(e) => setAutoSelectEnabled(e.target.checked)}
+              />
+              Auto-select nearby seats
+            </label>
+          </div>
         </div>
         
         {/* Seats UI */}
@@ -305,8 +390,8 @@ const theatreLayout = [
 
           {/* Seats */}
           <div className="seats flex flex-col gap-3">
-            {theatreLayout.map((item) => {
-              const rowSeats = seats.filter(seat => seat.row === item.row)
+            {displayTheatreLayout.map((item) => {
+              const rowSeats = displaySeats.filter(seat => seat.row === item.row)
 
               // Blank row UI
               if(item.type === "blank")
@@ -354,6 +439,7 @@ const theatreLayout = [
                   // Empty seat style
                   if (seat.type === "empty") {
                     seatOpacity = 0;
+                    seatCursor = 'default'
                   }
 
                   if (seat.category === "sofa") {
@@ -365,7 +451,7 @@ const theatreLayout = [
                     // Seat button mapping
                     <button
                       onClick={() => handleSeatSelect(seat)}
-                      disabled={seat.status === "booked" || seat.type === "aisle"}
+                      disabled={seat.status === "booked" || seat.type !== "seat"}
                       title={seat.status === "booked"? "Seat is already booked!":null}
                       key={seat.id}
                       className='font-medium shadow shadow-gray-300 cursor-pointer transition-colors ease-in-out duration-100 rounded'

@@ -1,5 +1,7 @@
 import Navbar from '../components/Navbar'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import axios from 'axios'
+import { getToken } from '../utils/auth'
 
 
 const PaymentPage = () => {
@@ -30,33 +32,39 @@ const PaymentPage = () => {
   const screen = bookingData.screen
   const selectedSeats = bookingData.selectedSeats
   const totalPrice = bookingData.totalPrice
+  const showId = bookingData.showId
 const convFee = Number((totalPrice * 2.7 / 100).toFixed(2))
   const finalPrice = totalPrice + convFee
 
-  function handleConfirmPayment() {
-    const newBooking = {
-      id: Date.now(),
-      movieName: bookingData.movieName,
-      theatreName: bookingData.theatreName,
-      screen: bookingData.screen,
-      date: bookingData.showDate,
-      time: bookingData.showTime,
-      seats: bookingData.selectedSeats,
-      totalAmount: bookingData.totalPrice,
-      paymentStatus: "paid",
-      bookingStatus: "confirmed",
-    }
+  async function handleConfirmPayment() {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/bookings`,
+        {
+          show: showId,
+          movieName,
+          theatreName,
+          screen,
+          date: showDate,
+          time: showTime,
+          seats: selectedSeats,
+          seatAmount: totalPrice,
+          convenienceFee: convFee,
+          totalAmount: finalPrice,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      )
 
-    const oldBookings = JSON.parse(sessionStorage.getItem("bookings")) || []
-
-    const updatedBookings = [...oldBookings, newBooking]
-
-    sessionStorage.setItem("bookings", JSON.stringify(updatedBookings))
-
-    alert('Payment successful! Booking confirmed.')
     sessionStorage.removeItem("selectedSeats")
 
-    navigate("/")
+    navigate("/bookings")
+    } catch (error) {
+      console.log("Failed to confirm booking", error.response?.data || error)
+    }
 
   }
 
