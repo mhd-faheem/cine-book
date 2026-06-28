@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import { Link } from 'react-router-dom'
 import InfoIcon from "@mui/icons-material/InfoOutlined"
+import { useState } from 'react'
 
 const MyBookings = () => { 
   const [bookings, setBookings] = useState(() => {

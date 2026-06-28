@@ -9,6 +9,7 @@ import MyBookings from './pages/MyBookings'
 import ProtectedRoute from "./components/ProtectedRoute";
 import SeatSelection from './pages/SeatSelection'
 import PaymentPage from './pages/PaymentPage'
+import ShowSelection from './pages/ShowSelection'
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminMovies from "./pages/AdminMovies";
 
@@ -20,6 +21,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/movies/:id" element={<MovieDetails />} />
+      <Route path="/movies/:id/shows" element={<ShowSelection />} />
       <Route path="/bookings" element={
         // <ProtectedRoute>
           <MyBookings />

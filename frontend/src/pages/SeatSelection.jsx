@@ -1,14 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import '../styles/SeatSelection.css'
 import Navbar from '../components/Navbar'
-import movies from '../data/movies.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import axios from 'axios'
 
 const SeatSelection = () => {
 
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const params = useParams();
+  const location = useLocation();
+  const movieId = params.id;
+  const selectedShow = location.state?.show;
+  const [movieData, setMovieData] = useState(null);
+
+  useEffect(() => {
+    const fetchMovie = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/movies/${movieId}`);
+        setMovieData(response.data);
+      } catch (error) {
+        console.log("Failed to fetch movie", error);
+      }
+    };
+
+    fetchMovie();
+  }, [movieId]);
 
   // Load selected seats from temporary storage
   const [selectedSeats, setSelectedSeats] = useState(() => {
@@ -160,13 +178,6 @@ const theatreLayout = [
   { id: 11, type: "row", row: "F" },
   { id: 12, type: "row", row: "G" },
 ]
-  // Extract id from URL
-  let params = useParams();
-  let movieId = params.id;
-
-  // Find movie data from movies array using id
-  let movieData = movies.find(movie => movie.id === Number(movieId))
-
   if(!movieData) {
     return (
       <div>
@@ -226,7 +237,7 @@ const theatreLayout = [
 
     // Forces guest accounts to login/signup before seat booking
     if (!isAuthenticated) {
-      sessionStorage.setItem("redirectAfterLogin", `/movies/${movieId}/seats`)
+      sessionStorage.setItem("redirectAfterLogin", `/movies/${movieId}/shows`)
       alert("Please login or signup before you book your seats.")
       navigate("/login")
       return
@@ -236,7 +247,10 @@ const theatreLayout = [
       navigate(`/movies/${movieId}/seats/payment`, {
         state: {
           movieName: movieData.title,
-          theatreName: "K Cinemas",
+          theatreName: selectedShow?.theatre?.name || "K Cinemas",
+          showDate: selectedShow?.date,
+          showTime: selectedShow?.time,
+          screen: selectedShow?.screen,
           selectedSeats: selectedSeats,
           totalPrice: totalPrice,
         }
@@ -256,11 +270,16 @@ const theatreLayout = [
       {/* Start Main Wrapper */}
       <div className='main-wrapper items-center'>
         <div className="top-section p-5 w-full">
-          <Link to={`/movies/${movieId}`} className='back-button' onClick={() => sessionStorage.removeItem("selectedSeats")}>&larr; Back</Link>
+          <Link to={`/movies/${movieId}/shows`} className='back-button' onClick={() => sessionStorage.removeItem("selectedSeats")}>&larr; Back</Link>
           <div className='flex justify-between mt-3 items-center'>
             <div className='flex flex-col gap-0.5 '>
               <p className='text-2xl font-regular'>{movieData.title}</p>
-              <p className='text-gray-700'>Theatre name - Showtime</p>
+              <p className='text-gray-700'>
+                {selectedShow?.theatre?.name || "Theatre"} - {selectedShow?.screen || "Screen"}
+              </p>
+              {selectedShow && (
+                <p className='text-gray-500'>{selectedShow.date} at {selectedShow.time}</p>
+              )}
             </div>
             <div className='ticket-counter'>
               <p className='font-regular text-red-500 underline cursor-pointer'>{tickets} Tickets</p>

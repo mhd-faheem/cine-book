@@ -1,11 +1,37 @@
-import React from 'react'
 import Navbar from '../components/Navbar.jsx'
 import '../styles/HomePage.css'
 import MovieCard from '../components/MovieCard.jsx'
-import movies from '../data/movies.js'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const HomePage = () => {
-  return (
+
+  const [movies, setMovies] = useState([])
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/movies`)
+        setMovies(response.data)
+      } catch (error) {
+        console.log("Failed to fetch movies", error)
+      }
+    }
+
+    fetchMovies()
+  }, [])
+
+  if(!movies){
+    return (
+      <div>
+        <Navbar/>
+        <div className='flex justify-center align-middle items-center mt-50'>
+          <p className='text-3xl font-bold'>Loading...</p>
+        </div>
+      </div>
+    )
+  }
+    return (
     <div>
         {/* Navbar Component */}
         <Navbar/>
@@ -14,7 +40,7 @@ const HomePage = () => {
             {/* Movie Cards */}
             <div className='movie-cards flex gap-3'>
                 {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie}/>
+            <MovieCard key={movie._id} movie={movie}/>
              ))}
             </div>
         </div>

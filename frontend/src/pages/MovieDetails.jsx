@@ -1,16 +1,36 @@
-import React from 'react'
 import { Link, useParams } from 'react-router-dom'
-import movies from '../data/movies.js'
 import '../styles/MovieDetails.css'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import Navbar from '../components/Navbar.jsx'
 
 const MovieDetails = () => {
   const { id } = useParams()
 
-  const movie = movies.find((movie) => movie.id === Number(id))
+  const [movie, setMovie] = useState(null)
 
-  if (!movie) {
-    return <p>Movie not found</p>
+  useEffect(() => {
+  const fetchMovie = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/movies/${id}`)
+        setMovie(response.data)
+      } catch (error) {
+        console.log("Failed to fetch movie", error)
+      }
+    }
+
+    fetchMovie()
+  }, [id])
+
+  if(!movie){
+    return (
+      <div>
+        <Navbar/>
+        <div className='flex justify-center align-middle items-center mt-50'>
+          <p className='text-3xl font-bold'>Loading movie details...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -24,16 +44,22 @@ const MovieDetails = () => {
       </Link>
 
       <div className='movie-details-card'>
-        <img src={movie.image} alt={movie.title} className='movie-details-image' />
+        <img src={movie.poster} alt={movie.title} className='movie-details-image' />
 
         <div className='movie-details-info'>
           <h1>{movie.title}</h1>
 
           <p className='movie-description'>
-            Movie description will come here. Later this data will come from the database.
+            {movie.description}
           </p>
 
-          <Link to={`/movies/${id}/seats`} className='book-now-btn'>
+          <p>Language: {movie.language}</p>
+          <p>Genre: {movie.genre}</p>
+          <p>Duration: {movie.duration}</p>
+          <p>Rating: {movie.rating}</p>
+          <p>Certification: {movie.certification}</p>
+
+          <Link to={`/movies/${id}/shows`} className='book-now-btn mt-10'>
             Book Tickets
           </Link>
         </div>
