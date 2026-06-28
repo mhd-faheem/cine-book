@@ -34,34 +34,57 @@ const MovieDetails = () => {
   }
 
   return (
-    
-    
     <div className='movie-details-page'>
-        
-    <Navbar/>
-      <Link to='/' className='back-btn mt-5 ml-5'>
-        &larr; Back
-      </Link>
+      <Navbar/>
 
-      <div className='movie-details-card'>
-        <img src={movie.poster} alt={movie.title} className='movie-details-image' />
-
-        <div className='movie-details-info'>
-          <h1>{movie.title}</h1>
-
-          <p className='movie-description'>
-            {movie.description}
-          </p>
-
-          <p>Language: {movie.language}</p>
-          <p>Genre: {movie.genre}</p>
-          <p>Duration: {movie.duration}</p>
-          <p>Rating: {movie.rating}</p>
-          <p>Certification: {movie.certification}</p>
-
-          <Link to={`/movies/${id}/shows`} className='book-now-btn mt-10'>
-            Book Tickets
+      <div className='movie-details-hero'>
+        <div className='movie-back-wrap'>
+          <Link to='/' className='back-btn'>
+            &larr; Back
           </Link>
+        </div>
+
+        <div className='movie-details-card'>
+          <div className='movie-poster-wrap'>
+            <img src={movie.poster} alt={movie.title} className='movie-details-image' />
+          </div>
+
+          <div className='movie-details-info'>
+            <div className='movie-meta-row'>
+              {movie.certification && <span>{movie.certification}</span>}
+              {movie.language && <span>{movie.language}</span>}
+              {movie.duration && <span>{movie.duration}</span>}
+            </div>
+
+            <h1>{movie.title}</h1>
+
+            <div className='movie-rating-row'>
+              {movie.rating && <p className='movie-rating'>★ {movie.rating}/10</p>}
+              {movie.genre && <p>{movie.genre}</p>}
+            </div>
+
+            <p className='movie-description'>
+              {movie.description || "No description available."}
+            </p>
+
+            {movie.cast?.length > 0 && (
+              <div className='cast-section'>
+                <h2>Cast</h2>
+                <div className='cast-list'>
+                  {movie.cast.map((person) => (
+                    <div className='cast-member' key={person._id || person.name}>
+                      <img src={person.image} alt={person.name} />
+                      <p>{person.name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <Link to={`/movies/${id}/shows`} className='book-now-btn'>
+              Book Tickets
+            </Link>
+          </div>
         </div>
       </div>
     </div>

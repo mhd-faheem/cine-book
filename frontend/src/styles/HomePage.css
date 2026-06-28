@@ -1,11 +1,86 @@
-.content-section {
-    margin: 15px;
+.home-page {
+    min-height: 100vh;
+    background: #f6f6f6;
 }
 
-.movie-cards img {
-    height: 16rem;
-    aspect-ratio: 4/5;
-    border-radius: 25px;
+.content-section {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 32px 0 48px;
+}
+
+.home-header {
+    margin-bottom: 24px;
+}
+
+.home-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+}
+
+.home-subtitle {
+    margin-top: 6px;
+    color: #666;
+}
+
+.movie-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 24px;
+}
+
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #111;
+    text-decoration: none;
+}
+
+.movie-card img {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.movie-card:hover img {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+}
+
+.movie-card-info {
+    min-width: 0;
+}
+
+.movie-card-title {
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.movie-card-meta {
+    margin-top: 2px;
+    color: #777;
+    font-size: 14px;
+}
+
+@media (max-width: 520px) {
+    .content-section {
+        width: min(100% - 24px, 1180px);
+        padding-top: 24px;
+    }
+
+    .home-title {
+        font-size: 24px;
+    }
+
+    .movie-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
 }
 
 

@@ -7,6 +7,7 @@ import axios from 'axios'
 const HomePage = () => {
 
   const [movies, setMovies] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -15,13 +16,15 @@ const HomePage = () => {
         setMovies(response.data)
       } catch (error) {
         console.log("Failed to fetch movies", error)
+      } finally {
+        setLoading(false)
       }
     }
 
     fetchMovies()
   }, [])
 
-  if(!movies){
+  if(loading){
     return (
       <div>
         <Navbar/>
@@ -32,13 +35,16 @@ const HomePage = () => {
     )
   }
     return (
-    <div>
+    <div className='home-page'>
         {/* Navbar Component */}
         <Navbar/>
-        <div className='content-section p-2'>
-            <p className='text-2xl font-bold mb-6'>Recommended Movies</p>
+        <div className='content-section'>
+            <div className='home-header'>
+              <p className='home-title'>Recommended Movies</p>
+              <p className='home-subtitle'>Book your next big-screen watch from the movies currently showing.</p>
+            </div>
             {/* Movie Cards */}
-            <div className='movie-cards flex gap-3'>
+            <div className='movie-cards'>
                 {movies.map((movie) => (
             <MovieCard key={movie._id} movie={movie}/>
              ))}

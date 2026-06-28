@@ -40,7 +40,11 @@ const MyBookings = () => {
     )
   }
 
-  if(bookings.length === 0){
+  const activeBookings = bookings.filter((booking) => {
+    return booking.bookingStatus !== "cancelled"
+  })
+
+  if(activeBookings.length === 0){
     return (
       <div>
       <Navbar/>
@@ -105,7 +109,7 @@ const MyBookings = () => {
             <p className='text-gray-500'>Cancellations only allowed upto 2 hours before before showtime begins.</p>
           </div>
           <div className='flex gap-5'>
-            {bookings.map((booking) => {
+            {activeBookings.map((booking) => {
               return (
                 <div className='shadow-[0_6px_20px_rgba(0,0,0,0.20)] border border-gray-300  p-5 rounded-xl min-w-80' key={booking._id}>
                         <h2>Movie: {booking.movieName}</h2>

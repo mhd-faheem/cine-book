@@ -10,6 +10,8 @@ const ShowSelection = () => {
   const [movie, setMovie] = useState(null);
   const [shows, setShows] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
+  const [selectedShow, setSelectedShow] = useState(null);
+  const [ticketCount, setTicketCount] = useState(1);
 
   useEffect(() => {
     const fetchPageData = async () => {
@@ -59,22 +61,19 @@ const ShowSelection = () => {
 
   const showGroups = Object.values(groupedShows);
 
-  const handleSelectSeats = (show) => {
-    const ticketInput = window.prompt("How many tickets do you want?", "1");
-    const ticketCount = Number(ticketInput);
+  const openTicketModal = (show) => {
+    setSelectedShow(show);
+    setTicketCount(1);
+  };
 
-    if (!ticketInput) {
-      return;
-    }
+  const closeTicketModal = () => {
+    setSelectedShow(null);
+  };
 
-    if (!ticketCount || ticketCount < 1 || ticketCount > 10) {
-      alert("Please enter a ticket count between 1 and 10.");
-      return;
-    }
-
+  const handleSelectSeats = () => {
     sessionStorage.setItem("selectedTicketCount", String(ticketCount));
 
-    navigate(`/shows/${show._id}/seats`, {
+    navigate(`/shows/${selectedShow._id}/seats`, {
       state: {
         tickets: ticketCount,
       },
@@ -146,7 +145,7 @@ const ShowSelection = () => {
                     {group.shows.map((show) => (
                       <button
                         key={show._id}
-                        onClick={() => handleSelectSeats(show)}
+                        onClick={() => openTicketModal(show)}
                         className="border border-red-500 text-red-500 px-4 py-2 rounded cursor-pointer hover:bg-red-500 hover:text-white"
                       >
                         {show.time}
@@ -159,6 +158,54 @@ const ShowSelection = () => {
           </>
         )}
       </div>
+
+      {selectedShow && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center px-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-[0_12px_40px_rgba(0,0,0,0.25)]">
+            <h2 className="text-2xl font-bold">Select Tickets</h2>
+            <p className="text-gray-600 mt-2">
+              {selectedShow.theatre?.name} - {selectedShow.screen}
+            </p>
+            <p className="text-gray-600">
+              {selectedShow.date} at {selectedShow.time}
+            </p>
+
+            <div className="flex items-center justify-center gap-6 mt-8">
+              <button
+                onClick={() => ticketCount > 1 ? setTicketCount(ticketCount - 1) : null}
+                className="w-10 h-10 rounded-full border border-gray-300 text-xl cursor-pointer"
+              >
+                -
+              </button>
+
+              <p className="text-3xl font-bold w-12 text-center">{ticketCount}</p>
+
+              <button
+                onClick={() => ticketCount < 10 ? setTicketCount(ticketCount + 1) : null}
+                className="w-10 h-10 rounded-full border border-gray-300 text-xl cursor-pointer"
+              >
+                +
+              </button>
+            </div>
+
+            <div className="flex gap-3 mt-8">
+              <button
+                onClick={closeTicketModal}
+                className="flex-1 border border-gray-300 py-2 rounded cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleSelectSeats}
+                className="flex-1 bg-red-500 text-white py-2 rounded cursor-pointer"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

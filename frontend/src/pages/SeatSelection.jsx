@@ -150,13 +150,14 @@ const SeatSelection = () => {
       setSelectedSeats(updatedSeats)
     } else if (autoSelectEnabled) {
       const autoSelectedSeats = getSequentialSeats(seat)
-      const seatsNeeded = tickets - selectedSeats.length
+      const currentSelectedSeats = selectedSeats.length === tickets ? [] : selectedSeats
+      const seatsNeeded = tickets - currentSelectedSeats.length
       const newSeats = autoSelectedSeats.filter((seatId) => {
-        return !selectedSeats.includes(seatId)
+        return !currentSelectedSeats.includes(seatId)
       })
       const seatsToAdd = newSeats.slice(0, seatsNeeded)
 
-      setSelectedSeats([...selectedSeats, ...seatsToAdd])
+      setSelectedSeats([...currentSelectedSeats, ...seatsToAdd])
     } else if (selectedSeats.length <= tickets - 1) {
       setSelectedSeats([...selectedSeats, seat.id])
     } else {
@@ -167,6 +168,7 @@ const SeatSelection = () => {
   function handlePayment() {
     if (!isAuthenticated) {
       sessionStorage.setItem("redirectAfterLogin", `/shows/${showId}/seats`)
+      alert("Please login before booking your seats.")
       navigate("/login")
       return
     }
