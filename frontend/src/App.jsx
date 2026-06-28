@@ -9,6 +9,8 @@ import MyBookings from './pages/MyBookings'
 import ProtectedRoute from "./components/ProtectedRoute";
 import SeatSelection from './pages/SeatSelection'
 import PaymentPage from './pages/PaymentPage'
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminMovies from "./pages/AdminMovies";
 
 function App() {
   return (
@@ -19,13 +21,26 @@ function App() {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/movies/:id" element={<MovieDetails />} />
       <Route path="/bookings" element={
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <MyBookings />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/bookings" element={<MyBookings />} />
       <Route path="/movies/:id/seats" element={<SeatSelection />} />
       <Route path="/movies/:id/seats/payment" element={<PaymentPage/>}/>
+      <Route path="/admin" element={
+        <ProtectedRoute adminOnly={true}>
+            <AdminDashboard />
+        </ProtectedRoute>
+      }
+      />
+
+      <Route path="/admin/movies" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminMovies />
+        </ProtectedRoute>
+        }
+      />
     </Routes>
   )
 }
