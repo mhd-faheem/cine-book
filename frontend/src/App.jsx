@@ -1,4 +1,3 @@
-import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 import HomePage from './pages/HomePage'
@@ -23,13 +22,12 @@ function App() {
       <Route path="/movies/:id" element={<MovieDetails />} />
       <Route path="/movies/:id/shows" element={<ShowSelection />} />
       <Route path="/bookings" element={
-        // <ProtectedRoute>
+        <ProtectedRoute>
           <MyBookings />
-        // </ProtectedRoute>
+        </ProtectedRoute>
       } />
-      <Route path="/bookings" element={<MyBookings />} />
-      <Route path="/movies/:id/seats" element={<SeatSelection />} />
-      <Route path="/movies/:id/seats/payment" element={<PaymentPage/>}/>
+      <Route path="/shows/:showId/seats" element={<SeatSelection />} />
+      <Route path="/shows/:showId/seats/payment" element={<PaymentPage/>}/>
       <Route path="/admin" element={
         <ProtectedRoute adminOnly={true}>
             <AdminDashboard />

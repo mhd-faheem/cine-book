@@ -2,6 +2,7 @@ import Navbar from '../components/Navbar'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { getToken } from '../utils/auth'
+import { useState } from 'react'
 
 
 const PaymentPage = () => {
@@ -9,7 +10,9 @@ const PaymentPage = () => {
   const bookingData = location.state
   const navigate = useNavigate()
   const params = useParams()
-  let movieId = params.id
+  const showIdFromParams = params.showId
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
   // Return error ui if booking data is not found
   if(!bookingData){
@@ -18,7 +21,7 @@ const PaymentPage = () => {
             <Navbar/>
             <div className='flex flex-col justify-center items-center mt-10'>
             <p className='text-2xl font-medium'>No seats selected. Please return to Seat selection page.</p>
-            <Link to={`/movies/${movieId}/seats`} className='back-button ml-5 mt-2.5'>&larr; Back</Link>
+            <Link to={`/shows/${showIdFromParams}/seats`} className='back-button ml-5 mt-2.5'>&larr; Back</Link>
             </div>
           </div>
 
@@ -32,11 +35,14 @@ const PaymentPage = () => {
   const screen = bookingData.screen
   const selectedSeats = bookingData.selectedSeats
   const totalPrice = bookingData.totalPrice
-  const showId = bookingData.showId
+  const showId = bookingData.showId || showIdFromParams
 const convFee = Number((totalPrice * 2.7 / 100).toFixed(2))
   const finalPrice = totalPrice + convFee
 
   async function handleConfirmPayment() {
+    setSubmitting(true)
+    setError("")
+
     try {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/bookings`,
@@ -60,10 +66,14 @@ const convFee = Number((totalPrice * 2.7 / 100).toFixed(2))
       )
 
     sessionStorage.removeItem("selectedSeats")
+    sessionStorage.removeItem("selectedTicketCount")
 
     navigate("/bookings")
     } catch (error) {
       console.log("Failed to confirm booking", error.response?.data || error)
+      setError(error.response?.data?.message || "Failed to confirm booking")
+    } finally {
+      setSubmitting(false)
     }
 
   }
@@ -73,7 +83,7 @@ const convFee = Number((totalPrice * 2.7 / 100).toFixed(2))
     <div className='main-wrapper'>
       {/* Navbar Component */}
       <Navbar/>
-        <Link to={`/movies/${movieId}/seats`} className='back-button ml-5 mt-2.5'>&larr; Back</Link>
+        <Link to={`/shows/${showId}/seats`} className='back-button ml-5 mt-2.5'>&larr; Back</Link>
       <div className='flex justify-center'>
         <div className="booking-details flex flex-col p-8 bg-gray-100 w-1/2 rounded border-dashed border-2 border-gray-600 mt-10">
           <div className='flex justify-center'>
@@ -90,10 +100,16 @@ const convFee = Number((totalPrice * 2.7 / 100).toFixed(2))
             <p><b>Booking Fee:</b> &#8377;{totalPrice}</p>
             <p><b>Convenience Fee: </b>&#8377;{convFee}</p>
             <p><b>Total Fee: </b>&#8377;{finalPrice}</p>
+            {error && (
+              <p className='text-red-500 text-center mt-3'>{error}</p>
+            )}
             <div className='flex justify-center'>
               <button className='p-3 bg-red-500 text-white rounded-xl mt-6 cursor-pointer'
                onClick={handleConfirmPayment}
-              >Confirm payment</button>
+               disabled={submitting}
+              >
+                {submitting ? "Confirming..." : "Confirm payment"}
+              </button>
             </div>
           </div>
       </div>

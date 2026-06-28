@@ -72,9 +72,10 @@ const ShowSelection = () => {
       return;
     }
 
-    navigate(`/movies/${id}/seats`, {
+    sessionStorage.setItem("selectedTicketCount", String(ticketCount));
+
+    navigate(`/shows/${show._id}/seats`, {
       state: {
-        show,
         tickets: ticketCount,
       },
     });

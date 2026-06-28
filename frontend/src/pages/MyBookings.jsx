@@ -109,6 +109,7 @@ const MyBookings = () => {
               return (
                 <div className='shadow-[0_6px_20px_rgba(0,0,0,0.20)] border border-gray-300  p-5 rounded-xl min-w-80' key={booking._id}>
                         <h2>Movie: {booking.movieName}</h2>
+                        <p>Reference: {booking.bookingReference}</p>
                         <p>Theatre: {booking.theatreName}</p>
                         <p>Screen: {booking.screen || "Screen"}</p>
                         <p>Date: {booking.date || "dd-mm-yyyy"} at {booking.time || "00:00 am"}</p>

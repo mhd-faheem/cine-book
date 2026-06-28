@@ -8,20 +8,20 @@ const AdminMovies = () => {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/movies`
+        );
+
+        setMovies(response.data);
+      } catch (error) {
+        console.error("Failed to fetch movies:", error);
+      }
+    };
+
     fetchMovies();
   }, []);
-
-  const fetchMovies = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/movies`
-      );
-
-      setMovies(response.data);
-    } catch (error) {
-      console.error("Failed to fetch movies:", error);
-    }
-  };
 
   return (
     <AdminLayout>
