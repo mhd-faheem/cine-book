@@ -1,0 +1,44 @@
+.main-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+html {
+  overflow-y: scroll;
+}
+
+/* *{
+  background-color: black;
+  color: white;
+} */
+
+.ticket-counter button{
+  font-size: 22px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.back-button {
+  color: #333;
+  font-weight: 600;
+}
+
+.back-button:hover {
+  color: red
+}
+
+.screen-line {
+  box-shadow: 5px 10px 30px 3px rgba(255, 0, 0, 0.267);
+  border-radius: 8px;
+  height: 3px;
+}
+
+.seat-separator {
+  height: 0.1px;
+}
+
+.pay-button {
+  box-shadow: rgba(252, 1, 14, 0.2) 0px 8px 24px;
+}
+
