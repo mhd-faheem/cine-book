@@ -4,10 +4,14 @@ import InfoIcon from "@mui/icons-material/InfoOutlined"
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { getToken } from '../utils/auth'
+import toast from "react-hot-toast";
+import ConfirmationModal from "../components/admin/ConfirmationModal";
 
 const MyBookings = () => { 
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [bookingToCancel, setBookingToCancel] = useState(null);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -63,39 +67,55 @@ const MyBookings = () => {
     )
   }
 
-  async function handleCancelBooking(bookingId) {
-    const confirmCancel = window.confirm(
-        "Are you sure you want to cancel this booking?"
-      )
+  function handleCancelBooking(bookingId) {
+  setBookingToCancel(bookingId);
+  setShowCancelModal(true);
+}
+async function confirmCancelBooking() {
+  if (!bookingToCancel) return;
 
-      if (!confirmCancel) {
-        return
+  try {
+    const response = await axios.patch(
+      `${import.meta.env.VITE_API_URL}/bookings/${bookingToCancel}/cancel`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+
+    const updatedBookings = bookings.map((booking) => {
+      if (booking._id === bookingToCancel) {
+        return response.data.booking;
       }
 
-    try {
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/bookings/${bookingId}/cancel`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      )
+      return booking;
+    });
 
-      const updatedBookings = bookings.map((booking) => {
-        if (booking._id === bookingId) {
-          return response.data.booking
-        }
+    setBookings(updatedBookings);
 
-        return booking
-      })
+    toast.success("Booking cancelled successfully!");
+  } catch (error) {
+    console.log(
+      "Failed to cancel booking",
+      error.response?.data || error
+    );
 
-      setBookings(updatedBookings)
-    } catch (error) {
-      console.log("Failed to cancel booking", error.response?.data || error)
-    }
+    toast.error(
+      error.response?.data?.message ||
+        "Failed to cancel booking."
+    );
+  } finally {
+    setShowCancelModal(false);
+    setBookingToCancel(null);
   }
+}
+
+function cancelBookingModal() {
+  setShowCancelModal(false);
+  setBookingToCancel(null);
+}
 
   return (
     <div>
@@ -131,6 +151,15 @@ const MyBookings = () => {
             })}
           </div>
       </div>
+      <ConfirmationModal
+  isOpen={showCancelModal}
+  title="Cancel Booking"
+  message="Are you sure you want to cancel this booking?"
+  confirmText="Cancel Booking"
+  confirmButtonClass="bg-red-600 hover:bg-red-700"
+  onCancel={cancelBookingModal}
+  onConfirm={confirmCancelBooking}
+/>
     </div>
   )
 }

@@ -1,25 +1,33 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [message, setMessage] = useState('')
   const { login } = useAuth();
   const navigate = useNavigate()
-  
-
   const passwordRef = useRef(null);
+
+  useEffect(() => {
+  if (error) {
+    const timer = setTimeout(() => {
+      setError("");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }
+}, [error]);
 
   const handleLogin = async (e) => {
   e.preventDefault();
 
   setError("");
-  setMessage("");
+  
 
   if (!email || !password) {
     setError("Please fill all fields");
@@ -40,27 +48,21 @@ const LoginPage = () => {
     // 🔥 IMPORTANT: global auth update
     login(response.data);
   
-    setMessage("Login successful! Redirecting...");
+    toast.success("Login successful!");
 
-    
+setEmail("");
+setPassword("");
 
+const redirectPath = sessionStorage.getItem("redirectAfterLogin");
 
-
-    setEmail("");
-    setPassword("");
-
-    setTimeout(() => {
-  const redirectPath = sessionStorage.getItem("redirectAfterLogin");
-
-  if (redirectPath) {
-    sessionStorage.removeItem("redirectAfterLogin");
-    navigate(redirectPath);
-  } else if (response.data.user.role === "admin") {
-    navigate("/admin");
-  } else {
-    navigate("/");
-  }
-}, 1000);
+if (redirectPath) {
+  sessionStorage.removeItem("redirectAfterLogin");
+  navigate(redirectPath);
+} else if (response.data.user.role === "admin") {
+  navigate("/admin");
+} else {
+  navigate("/");
+}
     // navigate("/");
 
   } catch (error) {
@@ -69,6 +71,9 @@ const LoginPage = () => {
     setError(
       error.response?.data?.message || "Login failed"
     );
+    toast.error(
+  error.response?.data?.message || "Login failed"
+);
   }
 };
   return (
@@ -87,32 +92,34 @@ const LoginPage = () => {
 
         {/* Email */}
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              passwordRef.current.focus();
-            }
-          }}
-          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-        />
+  type="email"
+  placeholder="Email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      passwordRef.current.focus();
+    }
+  }}
+  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+/>
 
         {/* Password */}
         <input
-          ref={passwordRef}
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleLogin(e);
-            }
-          }}
-          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-        />
+  ref={passwordRef}
+  type="password"
+  placeholder="Password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.form?.requestSubmit();
+    }
+  }}
+  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+/>
 
         {/* Error */}
         {error && (
@@ -121,11 +128,7 @@ const LoginPage = () => {
           </p>
         )}
 
-        {message && (
-        <p className="text-green-500 text-sm text-center mb-3">
-          {message}
-        </p>
-        )}
+        
 
         {/* Button */}
         <button

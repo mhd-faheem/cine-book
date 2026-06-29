@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { getToken } from '../utils/auth'
 import { useState } from 'react'
+import toast from "react-hot-toast";
 
 
 const PaymentPage = () => {
@@ -65,13 +66,19 @@ const convFee = Number((totalPrice * 2.7 / 100).toFixed(2))
         }
       )
 
-    sessionStorage.removeItem("selectedSeats")
-    sessionStorage.removeItem("selectedTicketCount")
+    sessionStorage.removeItem("selectedSeats");
+    sessionStorage.removeItem("selectedTicketCount");
 
-    navigate("/bookings")
+    toast.success("Booking confirmed successfully!");
+
+    navigate("/bookings");
     } catch (error) {
       console.log("Failed to confirm booking", error.response?.data || error)
-      setError(error.response?.data?.message || "Failed to confirm booking")
+      const errorMessage =
+  error.response?.data?.message || "Failed to confirm booking.";
+
+setError(errorMessage);
+toast.error(errorMessage);
     } finally {
       setSubmitting(false)
     }

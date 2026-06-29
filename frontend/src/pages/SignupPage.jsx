@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
@@ -9,7 +10,15 @@ const SignupPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [message, setMessage] = useState('')
+  useEffect(() => {
+  if (error) {
+    const timer = setTimeout(() => {
+      setError("");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }
+}, [error]);
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -21,7 +30,7 @@ const SignupPage = () => {
 
   // reset messages first
   setError("");
-  setMessage("");
+  
 
   const cleanName = name.trim();
   const cleanEmail = email.trim();
@@ -74,11 +83,8 @@ const SignupPage = () => {
     // navigate("/login");
     
 
-    setTimeout(() => {
-      navigate("/login");
-    }, 1500);
-    // setMessage("Signup successful! Please login.");
-    setMessage("Account created successfully! Please login. ");
+    toast.success("Account created successfully! Please login.");
+navigate("/login");
 
     // optional reset
     setName("");
@@ -96,6 +102,9 @@ const SignupPage = () => {
       error.response?.data?.message ||
         "Signup failed"
     );
+    toast.error(
+  error.response?.data?.message || "Signup failed"
+);
   }
 };
 
@@ -114,69 +123,78 @@ const SignupPage = () => {
 
         {/* Name */}
         <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            setError("");
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              emailRef.current.focus();
-            }
-          }}
-          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-        />
+  type="text"
+  placeholder="Name"
+  value={name}
+  onChange={(e) => {
+    setName(e.target.value);
+    setError("");
+  }}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      emailRef.current.focus();
+    }
+  }}
+  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+/>
 
         {/* Email */}
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          ref={emailRef}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setError("");
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              passwordRef.current.focus();
-            }
-          }}
-          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-        />
+  type="email"
+  placeholder="Email"
+  value={email}
+  ref={emailRef}
+  onChange={(e) => {
+    setEmail(e.target.value);
+    setError("");
+  }}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      passwordRef.current.focus();
+    }
+  }}
+  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+/>
 
         {/* Password */}
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          ref={passwordRef}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            setError("");
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              confirmRef.current.focus();
-            }
-          }}
-          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-        />
+       <input
+  type="password"
+  placeholder="Password"
+  value={password}
+  ref={passwordRef}
+  onChange={(e) => {
+    setPassword(e.target.value);
+    setError("");
+  }}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      confirmRef.current.focus();
+    }
+  }}
+  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+/>
 
         {/* Confirm Password */}
         <input
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          ref={confirmRef}
-          onChange={(e) => {
-            setConfirmPassword(e.target.value);
-            setError("");
-          }}
-          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-        />
+  type="password"
+  placeholder="Confirm Password"
+  value={confirmPassword}
+  ref={confirmRef}
+  onChange={(e) => {
+    setConfirmPassword(e.target.value);
+    setError("");
+  }}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.form?.requestSubmit();
+    }
+  }}
+  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+/>
 
 
         {error && (
@@ -185,11 +203,7 @@ const SignupPage = () => {
             </p>
             )}
 
-        {message && (
-            <p className="text-green-500 text-sm mb-3 text-center">
-                {message}
-            </p>
-        )}
+        
 
         {/* Button */}
         <button

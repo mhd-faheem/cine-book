@@ -1,3 +1,5 @@
+import { FaEdit, FaTrash } from "react-icons/fa";
+
 const MovieTable = ({
   movies,
   onDelete,
@@ -66,17 +68,25 @@ const MovieTable = ({
                 <td className="px-6 py-4">
   <div className="flex gap-2">
 
+    {/* EDIT BUTTON */}
     <button
       onClick={() => onEdit(movie)}
-      className="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg text-sm transition cursor-pointer"
+      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm
+                 bg-yellow-500/10 text-yellow-400 border border-yellow-500/30
+                 hover:bg-yellow-500/20 hover:border-yellow-400 transition cursor-pointer"
     >
+      <FaEdit size={12} />
       Edit
     </button>
 
+    {/* DELETE BUTTON */}
     <button
-      onClick={() => onDelete(movie._id)}
-      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition cursor-pointer"
+      onClick={() => onDelete(movie)}
+      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm
+                 bg-red-500/10 text-red-400 border border-red-500/30
+                 hover:bg-red-500/20 hover:border-red-400 transition cursor-pointer"
     >
+      <FaTrash size={12} />
       Delete
     </button>
 
