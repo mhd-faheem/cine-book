@@ -1,17 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { getUser, getToken, logout as clearAuth } from "../utils/auth";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-
-  // Load auth on app start
-  useEffect(() => {
-    setUser(getUser());
-    setToken(getToken());
-  }, []);
+  const [user, setUser] = useState(() => getUser());
+  const [token, setToken] = useState(() => getToken());
 
   // Login function
   const login = (data) => {
@@ -44,4 +38,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
