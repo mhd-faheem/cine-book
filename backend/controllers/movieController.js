@@ -6,4 +6,16 @@ const getMovies = async (req, res) => {
   res.json(movies);
 };
 
-module.exports = { getMovies };
+const getMovieById = async (req, res) => {
+  const movie = await Movie.findById(req.params.id);
+
+  if (!movie) {
+    return res.status(404).json({
+      message: "Movie not found",
+    });
+  }
+
+  res.json(movie);
+};
+
+module.exports = { getMovies, getMovieById };
