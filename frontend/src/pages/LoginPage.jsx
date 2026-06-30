@@ -1,25 +1,33 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [message, setMessage] = useState('')
   const { login } = useAuth();
   const navigate = useNavigate()
-  
-
   const passwordRef = useRef(null);
+
+  useEffect(() => {
+  if (error) {
+    const timer = setTimeout(() => {
+      setError("");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }
+}, [error]);
 
   const handleLogin = async (e) => {
   e.preventDefault();
 
   setError("");
-  setMessage("");
+  
 
   if (!email || !password) {
     setError("Please fill all fields");
@@ -40,28 +48,24 @@ const LoginPage = () => {
     // 🔥 IMPORTANT: global auth update
     login(response.data);
   
-    setMessage("Login successful! Redirecting...");
+    toast.success("Login successful!");
 
-    
+setEmail("");
+setPassword("");
 
+const redirectPath = sessionStorage.getItem("redirectAfterLogin");
 
+if (redirectPath) {
+  sessionStorage.removeItem("redirectAfterLogin");
+  navigate(redirectPath);
+} else if (response.data.user.role === "admin") {
+  // Show welcome toast only once after successful admin login
+  sessionStorage.setItem("showAdminWelcome", "true");
 
-    setEmail("");
-    setPassword("");
-
-    setTimeout(() => {
-  const redirectPath = sessionStorage.getItem("redirectAfterLogin");
-
-  if (redirectPath) {
-    sessionStorage.removeItem("redirectAfterLogin");
-    navigate(redirectPath);
-  } else if (response.data.user.role === "admin") {
-    navigate("/admin");
-  } else {
-    navigate("/");
-  }
-}, 1000);
-    // navigate("/");
+  navigate("/admin");
+} else {
+  navigate("/");
+}
 
   } catch (error) {
     console.log(error.response?.data);
@@ -69,50 +73,76 @@ const LoginPage = () => {
     setError(
       error.response?.data?.message || "Login failed"
     );
+    toast.error(
+  error.response?.data?.message || "Login failed"
+);
   }
 };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black text-white px-4">
+  <div className="min-h-screen bg-black text-white">
+
+    {/* Navbar */}
+    <nav className="flex items-center justify-between px-8 py-5 border-b border-zinc-800">
+      <Link
+        to="/"
+        className="text-3xl font-extrabold text-red-500"
+      >
+        CineBook
+      </Link>
+
+      {/* <Link
+        to="/signup"
+        className="text-sm text-gray-300 hover:text-red-500 transition"
+      >
+        Create Account
+      </Link> */}
+    </nav>
+
+    {/* Center Form */}
+    <div className="flex items-center justify-center min-h-[calc(100vh-81px)] px-4">
+
       <form
         onSubmit={handleLogin}
         className="bg-zinc-900 p-8 rounded-3xl w-full max-w-md pb-4"
       >
-        {/* <h1 className="text-red-600 text-4xl font-bold text-center mb-4">
-          CineBook
-        </h1> */}
-        {/* Title (same style as Signup) */}
+
+        {/* Everything inside your form stays EXACTLY the same */}
+
         <h2 className="text-3xl font-bold mb-6 text-red-500 text-center">
           Welcome Back
         </h2>
 
+        
         {/* Email */}
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              passwordRef.current.focus();
-            }
-          }}
-          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-        />
+  type="email"
+  placeholder="Email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      passwordRef.current.focus();
+    }
+  }}
+  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+/>
 
         {/* Password */}
         <input
-          ref={passwordRef}
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleLogin(e);
-            }
-          }}
-          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-        />
+  ref={passwordRef}
+  type="password"
+  placeholder="Password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.form?.requestSubmit();
+    }
+  }}
+  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+/>
 
         {/* Error */}
         {error && (
@@ -121,11 +151,7 @@ const LoginPage = () => {
           </p>
         )}
 
-        {message && (
-        <p className="text-green-500 text-sm text-center mb-3">
-          {message}
-        </p>
-        )}
+        
 
         {/* Button */}
         <button
@@ -156,8 +182,11 @@ const LoginPage = () => {
         </div>
 
       </form>
+
     </div>
-  );
+
+  </div>
+);
 };
 
 export default LoginPage;

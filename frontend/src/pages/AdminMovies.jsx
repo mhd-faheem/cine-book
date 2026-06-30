@@ -1,56 +1,57 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 import AdminLayout from "../components/admin/AdminLayout";
 import MovieTable from "../components/admin/MovieTable";
 import MovieForm from "../components/admin/MovieForm";
+import ConfirmationModal from "../components/admin/ConfirmationModal";
+import toast from "react-hot-toast";
 
 const AdminMovies = () => {
   const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
-
-  useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/movies`
-        );
-
-        setMovies(response.data);
-      } catch (error) {
-        console.error("Failed to fetch movies:", error);
-      }
-    };
-
-    fetchMovies();
-  }, []);
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [movieToDelete, setMovieToDelete] = useState(null);
+  const formRef = useRef(null);
+  
+useEffect(() => {
+  fetchMovies();
+}, []);
+  
   const fetchMovies = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/movies`
-      );
+  try {
+    setLoading(true);
 
-      setMovies(response.data);
-    } catch (error) {
-      console.error("Failed to fetch movies:", error);
-    }
-  };
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/movies`
+    );
+
+    setMovies(response.data);
+  } catch (error) {
+    console.error("Failed to fetch movies:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
   const handleSubmitMovie = async (movieData) => {
   try {
     if (selectedMovie) {
-      // Edit existing movie
       await axios.put(
         `${import.meta.env.VITE_API_URL}/movies/${selectedMovie._id}`,
         movieData
       );
+
+      toast.success("Movie updated successfully!");
     } else {
-      // Add new movie
       await axios.post(
         `${import.meta.env.VITE_API_URL}/movies`,
         movieData
       );
+
+      toast.success("Movie added successfully!");
     }
 
     fetchMovies();
@@ -59,30 +60,56 @@ const AdminMovies = () => {
     setSelectedMovie(null);
   } catch (error) {
     console.error("Failed to save movie:", error);
+
+    toast.error(
+      error.response?.data?.message || "Failed to save movie."
+    );
   }
 };
 
-const handleDeleteMovie = async (movieId) => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete this movie?"
-  );
+const handleDeleteMovie = (movie) => {
+  setMovieToDelete(movie);
+  setShowDeleteModal(true);
+};
 
-  if (!confirmDelete) return;
+const confirmDeleteMovie = async () => {
+  if (!movieToDelete) return;
 
   try {
     await axios.delete(
-      `${import.meta.env.VITE_API_URL}/movies/${movieId}`
+      `${import.meta.env.VITE_API_URL}/movies/${movieToDelete._id}`
     );
 
+    toast.success("Movie deleted successfully!");
+
     fetchMovies();
+
+    setShowDeleteModal(false);
+    setMovieToDelete(null);
   } catch (error) {
     console.error("Failed to delete movie:", error);
+
+    toast.error(
+      error.response?.data?.message || "Failed to delete movie."
+    );
   }
+};
+
+const cancelDeleteMovie = () => {
+  setShowDeleteModal(false);
+  setMovieToDelete(null);
 };
 
 const handleEditMovie = (movie) => {
   setSelectedMovie(movie);
   setShowForm(true);
+
+  setTimeout(() => {
+    formRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, 100);
 };
 
 const handleAddClick = () => {
@@ -105,25 +132,60 @@ const handleCloseForm = () => {
 
           <button
   onClick={showForm ? handleCloseForm : handleAddClick}
-  className=" bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition cursor-pointer"
+  className={`px-4 py-2 rounded-lg font-medium transition cursor-pointer ${
+    showForm
+      ? "bg-zinc-700 hover:bg-zinc-600 text-white"
+      : "bg-red-600 hover:bg-red-700 text-white"
+  }`}
 >
-  {showForm ? "Close Form" : "+ Add Movie"}
+  {showForm ? "Cancel" : "+ Add Movie"}
 </button>
         </div>
 
         {showForm && (
-  <MovieForm
-  movie={selectedMovie}
-  onSubmit={handleSubmitMovie}
-/>
+  <div ref={formRef}>
+    <MovieForm
+      movie={selectedMovie}
+      onSubmit={handleSubmitMovie}
+    />
+  </div>
 )}
 
-<MovieTable
-  movies={movies}
-  onDelete={handleDeleteMovie}
-  onEdit={handleEditMovie}
-/>
+{loading ? (
+  <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-10 text-center">
+    <p className="text-gray-400 text-lg">
+      Loading movies...
+    </p>
+  </div>
+) : (
+  <MovieTable
+    movies={movies}
+    onDelete={handleDeleteMovie}
+    onEdit={handleEditMovie}
+  />
+)}
       </div>
+
+      <ConfirmationModal
+  isOpen={showDeleteModal}
+  title="Delete Movie"
+  confirmText="Delete"
+  confirmButtonClass="bg-red-600 hover:bg-red-700"
+  onCancel={cancelDeleteMovie}
+  onConfirm={confirmDeleteMovie}
+>
+  <p className="text-gray-300 mb-2">
+    Are you sure you want to delete
+  </p>
+
+  <p className="text-red-500 font-semibold mb-2">
+    "{movieToDelete?.title}"
+  </p>
+
+  <p className="text-gray-500 text-sm">
+    This action cannot be undone.
+  </p>
+</ConfirmationModal>
     </AdminLayout>
   );
 };

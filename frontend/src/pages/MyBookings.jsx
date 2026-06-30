@@ -4,15 +4,14 @@ import InfoIcon from "@mui/icons-material/InfoOutlined"
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { getToken } from '../utils/auth'
-import '../styles/SeatSelection.css'
+import toast from "react-hot-toast";
+import ConfirmationModal from "../components/admin/ConfirmationModal";
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
-
-  const fetchBookings = async () => {
-      setLoading(true)
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [bookingToCancel, setBookingToCancel] = useState(null);
 
       try {
         setError("")
@@ -94,40 +93,55 @@ const MyBookings = () => {
     )
   }
 
-  async function handleCancelBooking(bookingId) {
-    const confirmCancel = window.confirm(
-      "Are you sure you want to cancel this booking?"
-    )
+  function handleCancelBooking(bookingId) {
+  setBookingToCancel(bookingId);
+  setShowCancelModal(true);
+}
+async function confirmCancelBooking() {
+  if (!bookingToCancel) return;
 
-    if (!confirmCancel) {
-      return
-    }
+  try {
+    const response = await axios.patch(
+      `${import.meta.env.VITE_API_URL}/bookings/${bookingToCancel}/cancel`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
 
-    try {
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/bookings/${bookingId}/cancel`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      )
+    const updatedBookings = bookings.map((booking) => {
+      if (booking._id === bookingToCancel) {
+        return response.data.booking;
+      }
 
-      const updatedBookings = bookings.map((booking) => {
-        if (booking._id === bookingId) {
-          return response.data.booking
-        }
+      return booking;
+    });
 
-        return booking
-      })
+    setBookings(updatedBookings);
 
-      setBookings(updatedBookings)
-    } catch (error) {
-      console.log("Failed to cancel booking", error.response?.data || error)
-      alert(error.response?.data?.message || "Failed to cancel booking. Please try again.")
-    }
+    toast.success("Booking cancelled successfully!");
+  } catch (error) {
+    console.log(
+      "Failed to cancel booking",
+      error.response?.data || error
+    );
+
+    toast.error(
+      error.response?.data?.message ||
+        "Failed to cancel booking."
+    );
+  } finally {
+    setShowCancelModal(false);
+    setBookingToCancel(null);
   }
+}
+
+function cancelBookingModal() {
+  setShowCancelModal(false);
+  setBookingToCancel(null);
+}
 
   return (
     <div className='booking-dark-page'>
@@ -160,31 +174,19 @@ const MyBookings = () => {
                       {booking.bookingStatus}
                     </span>
                   </div>
-
-                <div className='mt-4 flex flex-col gap-2 text-sm text-zinc-300'>
-                  <p><b className='text-white'>Theatre:</b> {booking.theatreName}</p>
-                  <p><b className='text-white'>Screen:</b> {booking.screen || "Screen"}</p>
-                  <p><b className='text-white'>Date:</b> {booking.date || "dd-mm-yyyy"} at {booking.time || "00:00 am"}</p>
-                  <p><b className='text-white'>Seats:</b> {booking.seats.join(", ")}</p>
-                  <p><b className='text-white'>Amount Paid:</b> <span className='font-semibold text-red-400'>&#8377;{booking.totalAmount}</span></p>
-
-                  <button
-                    className={
-                      isConfirmed
-                      ? "mt-3 w-fit rounded-lg bg-red-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-red-500"
-                      : "mt-3 w-fit cursor-not-allowed rounded-lg bg-zinc-800 px-4 py-2 font-semibold text-zinc-500"
-                    }
-                    disabled={!isConfirmed}
-                    onClick={() => handleCancelBooking(booking._id)}
-                  >
-                    Cancel Booking
-                  </button>
-                </div>
-              </article>
-            )
-          })}
-        </div>
-      </main>
+              )
+            })}
+          </div>
+      </div>
+      <ConfirmationModal
+  isOpen={showCancelModal}
+  title="Cancel Booking"
+  message="Are you sure you want to cancel this booking?"
+  confirmText="Cancel Booking"
+  confirmButtonClass="bg-red-600 hover:bg-red-700"
+  onCancel={cancelBookingModal}
+  onConfirm={confirmCancelBooking}
+/>
     </div>
   )
 }
