@@ -13,32 +13,316 @@ html {
   color: white;
 } */
 
+.booking-dark-page {
+  min-height: 100vh;
+  background: #080808;
+  color: #f8fafc;
+}
+
+.booking-surface {
+  background: #111;
+  border: 1px solid #27272a;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.ticket-counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  background: #151518;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
 .ticket-counter button{
-  font-size: 22px;
-  margin-left: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #0b0b0c;
+  border: none;
+  color: #f8fafc;
+  font-size: 20px;
+  line-height: 1;
   cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.ticket-counter button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
 }
 
 .back-button {
-  color: #333;
+  color: #d4d4d8;
   font-weight: 600;
 }
 
 .back-button:hover {
-  color: red
+  color: #f87171;
+}
+
+.seat-button {
+    box-shadow: 0 1px 3px 0 rgb(209 213 219 / 0.3),
+              0 1px 2px -1px rgb(209 213 219 / 0.1);
+  border: none;
+  outline: none;
+}
+
+.seat-button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.seat-button:disabled {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.04);
+}
+
+.seats-scroll {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.seats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(100%, 620px);
+  min-width: 360px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .ticket-counter {
+    width: auto;
+    justify-content: center;
+    align-self: stretch;
+  }
+
+  .row-label {
+    margin-right: 14px;
+    min-width: 16px;
+  }
+
+  .seat-button {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.06);
+  }
 }
 
 .screen-line {
-  box-shadow: 5px 10px 30px 3px rgba(255, 0, 0, 0.267);
+  box-shadow: 0 16px 42px 6px rgba(248, 113, 113, 0.32);
   border-radius: 8px;
   height: 3px;
 }
 
+.screen {
+  transform: none;
+}
+
+.selected-seats-info {
+  transform: none;
+}
+
 .seat-separator {
   height: 0.1px;
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .pay-button {
-  box-shadow: rgba(252, 1, 14, 0.2) 0px 8px 24px;
+  box-shadow: rgba(252, 1, 14, 0.3) 0px 14px 34px;
 }
 
+.pay-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.seat-pay-bar {
+  position: sticky;
+  bottom: 20px;
+  width: min(420px, calc(100% - 32px));
+  margin: 0 auto 20px;
+  z-index: 10;
+}
+
+.modal-fade {
+  animation: modalFade 180ms ease-out;
+}
+
+.modal-pop {
+  animation: modalPop 200ms ease-out;
+}
+
+.modal-fade-out {
+  animation: modalFadeOut 180ms ease-in forwards;
+}
+
+.modal-scale-out {
+  animation: modalScaleOut 180ms ease-in forwards;
+}
+
+.page-fade-in {
+  animation: pageFadeIn 180ms ease-out;
+}
+
+.cinema-loader {
+  min-height: 58vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.cinema-loader-screen {
+  width: 180px;
+  height: 3px;
+  border-radius: 999px;
+  background: #ef4444;
+  box-shadow: 0 0 22px rgba(239, 68, 68, 0.55);
+  animation: loaderGlow 1100ms ease-in-out infinite alternate;
+}
+
+.cinema-loader-spinner {
+  width: 30px;
+  height: 30px;
+  margin-top: 22px;
+  border-radius: 999px;
+  border: 3px solid #27272a;
+  border-top-color: #ef4444;
+  animation: loaderSpin 700ms linear infinite;
+}
+
+.cinema-loader-title {
+  margin-top: 16px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.cinema-loader-text {
+  margin-top: 4px;
+  color: #71717a;
+  font-size: 14px;
+}
+
+.error-state-card {
+  width: min(460px, calc(100% - 32px));
+  margin: 96px auto 0;
+  padding: 28px;
+  text-align: center;
+  background: #0d0d0f;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.error-state-card h2 {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.error-state-card p {
+  margin-top: 10px;
+  color: #a1a1aa;
+  font-size: 15px;
+}
+
+.error-state-link {
+  display: inline-flex;
+  border: none;
+  margin-top: 20px;
+  padding: 10px 16px;
+  color: #fff;
+  background: #dc2626;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.error-state-link:hover {
+  background: #ef4444;
+}
+
+.error-state-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.error-state-link.secondary {
+  background: #18181b;
+  color: #d4d4d8;
+}
+
+.error-state-link.secondary:hover {
+  background: #27272a;
+}
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modalScaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes loaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loaderGlow {
+  from {
+    opacity: 0.72;
+  }
+  to {
+    opacity: 1;
+  }
+}
