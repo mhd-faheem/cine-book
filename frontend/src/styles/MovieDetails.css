@@ -1,188 +1,293 @@
 .movie-details-page {
-  min-height: 100vh;
-  background: #f6f6f6;
-  color: #111;
+    min-height: 100vh;
+    background: #121212;
+    color: #fff;
 }
 
 .movie-details-hero {
-  width: min(1120px, calc(100% - 32px));
-  margin: 0 auto;
-  padding: 24px 0 56px;
+    width: min(1250px, calc(100% - 48px));
+    margin: auto;
+    padding: 35px 0 60px;
 }
 
 .movie-back-wrap {
-  margin-bottom: 18px;
-}
-
-.movie-details-card {
-  display: flex;
-  gap: 36px;
-  align-items: stretch;
-  background: white;
-  padding: 28px;
-  border-radius: 14px;
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.12);
-}
-
-.movie-poster-wrap {
-  flex: 0 0 300px;
-}
-
-.movie-details-image {
-  width: 100%;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
-}
-
-.movie-details-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  min-width: 0;
-  padding: 6px 0;
-}
-
-.movie-details-info h1 {
-  font-size: 42px;
-  line-height: 1.05;
-  font-weight: 900;
-  margin: 14px 0 12px;
-}
-
-.movie-meta-row,
-.movie-rating-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  color: #555;
-}
-
-.movie-meta-row span {
-  border: 1px solid #ddd;
-  border-radius: 999px;
-  padding: 5px 10px;
-  font-size: 14px;
-  background: #fafafa;
-}
-
-.movie-rating {
-  color: #e50914;
-  font-weight: 800;
-}
-
-.movie-description {
-  font-size: 16px;
-  color: #444;
-  margin: 24px 0;
-  max-width: 680px;
-  line-height: 1.7;
-}
-
-.cast-section {
-  margin: 4px 0 28px;
-}
-
-.cast-section h2 {
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 14px;
-}
-
-.cast-list {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.cast-member {
-  width: 92px;
-}
-
-.cast-member img {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #eee;
-}
-
-.cast-member p {
-  margin-top: 8px;
-  font-size: 13px;
-  line-height: 1.25;
-  color: #333;
-}
-
-.book-now-btn {
-  width: fit-content;
-  padding: 12px 24px;
-  background-color: #e50914;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: 700;
-  margin-top: auto;
-}
-
-.book-now-btn:hover {
-  background-color: #b20710;
+    margin-bottom: 25px;
 }
 
 .back-btn {
-  display: inline-block;
-  color: #333;
-  font-weight: 600;
-  text-decoration: none;
+    color: #cfcfcf;
+    text-decoration: none;
+    font-size: 15px;
+    transition: .2s;
 }
 
 .back-btn:hover {
-  color: #e50914;
+    color: #ef4444;
 }
 
-@media (max-width: 820px) {
-  .movie-details-card {
-    flex-direction: column;
-    padding: 20px;
-  }
+.movie-details-card {
 
-  .movie-poster-wrap {
-    flex-basis: auto;
-    width: min(260px, 100%);
-    margin: 0 auto;
-  }
+    display: flex;
+    gap: 40px;
 
-  .movie-details-info h1 {
-    font-size: 34px;
-  }
+    background: #1b1b1b;
 
-  .book-now-btn {
-    width: 100%;
-    text-align: center;
-  }
+    border-radius: 16px;
+
+    padding: 30px;
+
+    box-shadow: 0 12px 30px rgba(0,0,0,.45);
+
 }
 
-@media (max-width: 520px) {
-  .movie-details-hero {
-    width: min(100% - 24px, 1120px);
-    padding-top: 18px;
-  }
+.movie-poster-wrap{
 
-  .movie-details-card {
-    padding: 16px;
-    border-radius: 12px;
-  }
+    width:300px;
+    flex-shrink:0;
 
-  .movie-details-info h1 {
-    font-size: 28px;
-  }
+}
 
-  .movie-description {
-    font-size: 15px;
-  }
+.movie-details-image{
+
+    width:100%;
+    border-radius:14px;
+    aspect-ratio:2/3;
+    object-fit:cover;
+
+    box-shadow:0 12px 28px rgba(0,0,0,.55);
+
+}
+
+.movie-details-info{
+
+    flex:1;
+    display:flex;
+    flex-direction:column;
+
+}
+
+.movie-meta-row{
+
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+
+}
+
+.movie-meta-row span{
+
+background:#2a2a2a;
+
+color:#d4d4d4;
+
+padding:7px 14px;
+
+border-radius:50px;
+
+font-size:14px;
+
+}
+
+.movie-details-info h1{
+
+font-size:3rem;
+
+margin:18px 0 10px;
+
+font-weight:700;
+
+}
+
+.movie-rating-row{
+
+display:flex;
+
+gap:12px;
+
+align-items:center;
+
+margin-bottom:22px;
+
+}
+
+.movie-rating{
+
+color:#ef4444;
+
+font-size:18px;
+
+font-weight:700;
+
+}
+
+.movie-rating-row span{
+
+color:#b5b5b5;
+
+}
+
+.movie-description{
+
+color:#bcbcbc;
+
+line-height:1.8;
+
+font-size:16px;
+
+margin-bottom:35px;
+
+max-width:700px;
+
+}
+
+.cast-section h2{
+
+font-size:24px;
+
+margin-bottom:18px;
+
+}
+
+.cast-list{
+
+display:flex;
+
+gap:22px;
+
+flex-wrap:wrap;
+
+}
+
+.cast-member{
+
+text-align:center;
+
+width:90px;
+
+}
+
+.cast-member img{
+
+width:80px;
+
+height:80px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+border:3px solid #2f2f2f;
+
+transition:.25s;
+
+}
+
+.cast-member:hover img{
+
+border-color:#ef4444;
+
+transform:scale(1.05);
+
+}
+
+.cast-member p{
+
+margin-top:10px;
+
+font-size:13px;
+
+color:#c5c5c5;
+
+}
+
+.book-now-btn{
+
+margin-top:40px;
+
+width:fit-content;
+
+padding:14px 30px;
+
+background:#ef4444;
+
+color:white;
+
+text-decoration:none;
+
+border-radius:10px;
+
+font-weight:600;
+
+transition:.25s;
+
+}
+
+.book-now-btn:hover{
+
+background:#dc2626;
+
+transform:translateY(-2px);
+
+}
+
+@media(max-width:900px){
+
+.movie-details-card{
+
+flex-direction:column;
+
+}
+
+.movie-poster-wrap{
+
+width:260px;
+
+margin:auto;
+
+}
+
+.movie-details-info h1{
+
+font-size:2.2rem;
+
+}
+
+.book-now-btn{
+
+width:100%;
+
+text-align:center;
+
+}
+
+}
+
+@media(max-width:600px){
+
+.movie-details-hero{
+
+width:calc(100% - 24px);
+
+}
+
+.movie-details-card{
+
+padding:20px;
+
+gap:25px;
+
+}
+
+.movie-details-info h1{
+
+font-size:1.8rem;
+
+}
+
+.movie-description{
+
+font-size:15px;
+
+}
+
 }

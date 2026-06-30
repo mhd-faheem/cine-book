@@ -1,57 +1,91 @@
-import Navbar from '../components/Navbar.jsx'
-import '../styles/HomePage.css'
-import MovieCard from '../components/MovieCard.jsx'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import Navbar from "../components/Navbar";
+import "../styles/HomePage.css";
+import MovieCard from "../components/MovieCard";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const HomePage = () => {
-
-  const [movies, setMovies] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/movies`)
-        setMovies(response.data)
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/movies`
+        );
+
+        setMovies(response.data);
       } catch (error) {
-        console.log("Failed to fetch movies", error)
+        console.log("Failed to fetch movies", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchMovies()
-  }, [])
+    fetchMovies();
+  }, []);
 
-  if(loading){
+  const filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (loading) {
     return (
-      <div>
-        <Navbar/>
-        <div className='flex justify-center align-middle items-center mt-50'>
-          <p className='text-3xl font-bold'>Loading...</p>
+      <>
+        <Navbar />
+
+        <div className="loading-container">
+          <h2>Loading Movies...</h2>
         </div>
-      </div>
-    )
+      </>
+    );
   }
-    return (
-    <div className='home-page'>
-        {/* Navbar Component */}
-        <Navbar/>
-        <div className='content-section'>
-            <div className='home-header'>
-              <p className='home-title'>Recommended Movies</p>
-              <p className='home-subtitle'>Book your next big-screen watch from the movies currently showing.</p>
-            </div>
-            {/* Movie Cards */}
-            <div className='movie-cards'>
-                {movies.map((movie) => (
-            <MovieCard key={movie._id} movie={movie}/>
-             ))}
-            </div>
-        </div>
-    </div>
-  )
-}
 
-export default HomePage
+  return (
+    <div className="home-page">
+      <Navbar />
+
+      <div className="content-section">
+
+        <div className="home-header">
+          <div>
+            <h1 className="home-title">Now Showing</h1>
+
+            <p className="home-subtitle">
+              Explore the latest movies currently running in theatres.
+            </p>
+          </div>
+        </div>
+
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Search movies..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        {filteredMovies.length > 0 ? (
+          <div className="movie-cards">
+            {filteredMovies.map((movie) => (
+              <MovieCard
+                key={movie._id}
+                movie={movie}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state">
+            No movies found.
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;

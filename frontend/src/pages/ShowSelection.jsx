@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import "../styles/ShowSelection.css"
 
 const ShowSelection = () => {
   const { id } = useParams();

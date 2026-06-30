@@ -8,53 +8,64 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     navigate("/");
-    alert("Logged out successfully.")
   };
 
   return (
-    <div className="flex flex-row justify-between p-5 border border-gray-700 items-center text-white bg-black">
+    <nav className="bg-[#0f0f0f] shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
 
-      {/* Logo */}
-      <Link to={"/"} className="text-3xl font-extrabold text-red-500">
-        CineBook
-      </Link>
+        {/* Logo */}
+        <Link
+          to="/"
+          className="text-3xl font-bold text-red-500 tracking-wide"
+        >
+          CineBook
+        </Link>
 
-      {/* Navigation */}
-      <ul className="flex gap-4 items-center">
+        {/* Navigation */}
+        <div className="flex items-center gap-6">
 
-        {isAuthenticated ? (
-          <div className="flex items-center gap-4">
-            <span>
-              Welcome, {user?.name}
-            </span>
+          {isAuthenticated ? (
+            <>
+              <span className="text-gray-300 hidden md:block">
+                Hi, <span className="text-white font-semibold">{user?.name}</span>
+              </span>
 
-        {isAuthenticated && (
-          <Link to="/bookings">
-            <li>My Bookings</li>
-          </Link>
-        )}
+              <Link
+                to="/bookings"
+                className="text-gray-300 hover:text-white transition"
+              >
+                My Bookings
+              </Link>
 
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 px-3 py-1 rounded cursor-pointer"
-            >
-              Logout
-            </button>
-          </div>
-        ) : (
-          <>
-            <Link to="/login">
-              <li>Login</li>
-            </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition cursor-pointer"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-gray-300 hover:text-white transition"
+              >
+                Login
+              </Link>
 
-            <Link to="/signup">
-              <li>Sign Up</li>
-            </Link>
-          </>
-        )}
+              <Link
+                to="/signup"
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
 
-      </ul>
-    </div>
+        </div>
+      </div>
+    </nav>
   );
 };
 
