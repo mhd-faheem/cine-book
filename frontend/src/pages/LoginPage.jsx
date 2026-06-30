@@ -59,11 +59,13 @@ if (redirectPath) {
   sessionStorage.removeItem("redirectAfterLogin");
   navigate(redirectPath);
 } else if (response.data.user.role === "admin") {
+  // Show welcome toast only once after successful admin login
+  sessionStorage.setItem("showAdminWelcome", "true");
+
   navigate("/admin");
 } else {
   navigate("/");
 }
-    // navigate("/");
 
   } catch (error) {
     console.log(error.response?.data);
@@ -77,19 +79,40 @@ if (redirectPath) {
   }
 };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black text-white px-4">
+  <div className="min-h-screen bg-black text-white">
+
+    {/* Navbar */}
+    <nav className="flex items-center justify-between px-8 py-5 border-b border-zinc-800">
+      <Link
+        to="/"
+        className="text-3xl font-extrabold text-red-500"
+      >
+        CineBook
+      </Link>
+
+      {/* <Link
+        to="/signup"
+        className="text-sm text-gray-300 hover:text-red-500 transition"
+      >
+        Create Account
+      </Link> */}
+    </nav>
+
+    {/* Center Form */}
+    <div className="flex items-center justify-center min-h-[calc(100vh-81px)] px-4">
+
       <form
         onSubmit={handleLogin}
         className="bg-zinc-900 p-8 rounded-3xl w-full max-w-md pb-4"
       >
-        {/* <h1 className="text-red-600 text-4xl font-bold text-center mb-4">
-          CineBook
-        </h1> */}
-        {/* Title (same style as Signup) */}
+
+        {/* Everything inside your form stays EXACTLY the same */}
+
         <h2 className="text-3xl font-bold mb-6 text-red-500 text-center">
           Welcome Back
         </h2>
 
+        
         {/* Email */}
         <input
   type="email"
@@ -159,8 +182,11 @@ if (redirectPath) {
         </div>
 
       </form>
+
     </div>
-  );
+
+  </div>
+);
 };
 
 export default LoginPage;

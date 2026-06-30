@@ -7,7 +7,7 @@ const movieRoutes = require("./routes/movieRoutes");
 const showRoutes = require("./routes/showRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const connectDB = require("./config/db");
-
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
@@ -21,6 +21,7 @@ app.use("/api/movies", movieRoutes);
 app.use("/api/shows", showRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
   res.send("CineBook API is running");

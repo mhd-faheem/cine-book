@@ -109,110 +109,122 @@ navigate("/login");
 };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black text-white px-4">
+  <div className="min-h-screen bg-black text-white">
+    {/* Top Navbar */}
+    <nav className="flex items-center justify-between px-8 py-5 border-b border-zinc-800">
+      <Link
+        to="/"
+        className="text-3xl font-extrabold text-red-500 hover:text-red-400 transition"
+      >
+        CineBook
+      </Link>
+
+      <Link
+        to="/"
+        className="text-sm text-gray-300 hover:text-red-500 transition"
+      >
+        Browse as Guest
+      </Link>
+    </nav>
+
+    {/* Signup Form */}
+    <div className="flex items-center justify-center px-4 py-12">
       <form
         onSubmit={handleSignup}
         className="bg-zinc-900 p-8 rounded-3xl w-full max-w-md pb-4"
       >
-        
         <h2 className="text-3xl font-bold mb-6 text-red-500 text-center">
           Create Account
         </h2>
-        
-
 
         {/* Name */}
         <input
-  type="text"
-  placeholder="Name"
-  value={name}
-  onChange={(e) => {
-    setName(e.target.value);
-    setError("");
-  }}
-  onKeyDown={(e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      emailRef.current.focus();
-    }
-  }}
-  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-/>
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            setError("");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              emailRef.current.focus();
+            }
+          }}
+          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+        />
 
         {/* Email */}
         <input
-  type="email"
-  placeholder="Email"
-  value={email}
-  ref={emailRef}
-  onChange={(e) => {
-    setEmail(e.target.value);
-    setError("");
-  }}
-  onKeyDown={(e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      passwordRef.current.focus();
-    }
-  }}
-  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-/>
+          type="email"
+          placeholder="Email"
+          value={email}
+          ref={emailRef}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError("");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              passwordRef.current.focus();
+            }
+          }}
+          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+        />
 
         {/* Password */}
-       <input
-  type="password"
-  placeholder="Password"
-  value={password}
-  ref={passwordRef}
-  onChange={(e) => {
-    setPassword(e.target.value);
-    setError("");
-  }}
-  onKeyDown={(e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      confirmRef.current.focus();
-    }
-  }}
-  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-/>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          ref={passwordRef}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError("");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              confirmRef.current.focus();
+            }
+          }}
+          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+        />
 
         {/* Confirm Password */}
         <input
-  type="password"
-  placeholder="Confirm Password"
-  value={confirmPassword}
-  ref={confirmRef}
-  onChange={(e) => {
-    setConfirmPassword(e.target.value);
-    setError("");
-  }}
-  onKeyDown={(e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      e.currentTarget.form?.requestSubmit();
-    }
-  }}
-  className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
-/>
-
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          ref={confirmRef}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+            setError("");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              e.currentTarget.form?.requestSubmit();
+            }
+          }}
+          className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
+        />
 
         {error && (
-            <p className="text-red-500 text-sm mb-3 text-center">
-                {error}
-            </p>
-            )}
-
-        
+          <p className="text-red-500 text-sm mb-3 text-center">
+            {error}
+          </p>
+        )}
 
         {/* Button */}
         <button
           type="submit"
-          className="w-full bg-red-600 py-2 rounded-3xl font-semibold cursor-pointer hover:bg-red-700"
+          className="w-full bg-red-600 py-2 rounded-3xl font-semibold cursor-pointer hover:bg-red-700 transition"
         >
           Sign Up
         </button>
-        
 
         {/* Login Link */}
         <p className="mt-4 text-center text-sm">
@@ -224,19 +236,21 @@ navigate("/login");
             Login
           </Link>
         </p>
-        
-        <div className="flex justify-center mt-6">
-            <button
-                onClick={() => navigate(-1)}
-                className="text-gray-400 hover:text-white text-sm px-3 py-0 cursor-pointer"
-  >
-                ← Back
-            </button>
-        </div>
 
+        {/* Back Button */}
+        <div className="flex justify-center mt-6">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="text-gray-400 hover:text-white text-sm cursor-pointer"
+          >
+            ← Back
+          </button>
+        </div>
       </form>
     </div>
-  );
+  </div>
+);
 };
 
 export default SignupPage;

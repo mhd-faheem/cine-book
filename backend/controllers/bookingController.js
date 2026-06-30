@@ -80,6 +80,14 @@ const getMyBookings = async (req, res) => {
   res.json(bookings);
 };
 
+const getAllBookings = async (req, res) => {
+  const bookings = await Booking.find().sort({
+    createdAt: -1,
+  });
+
+  res.json(bookings);
+};
+
 const cancelBooking = async (req, res) => {
   const booking = await Booking.findOne({
     _id: req.params.id,
@@ -118,5 +126,6 @@ const cancelBooking = async (req, res) => {
 module.exports = {
   createBooking,
   getMyBookings,
+  getAllBookings,
   cancelBooking,
 };
