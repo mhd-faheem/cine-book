@@ -12,49 +12,52 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex flex-row justify-between p-5 border border-gray-700 items-center text-white bg-black">
+    <nav className="flex flex-col gap-4 border-b border-zinc-800 bg-black px-5 py-4 text-white sm:flex-row sm:items-center sm:justify-between">
 
-      {/* Logo */}
-      <Link to={"/"} className="text-3xl font-extrabold text-red-500">
+      <Link to={"/"} className="text-3xl font-extrabold tracking-tight text-red-500">
         CineBook
       </Link>
 
-      {/* Navigation */}
-      <ul className="flex gap-4 items-center">
-
+      <div className="flex flex-wrap items-center gap-3 text-sm sm:justify-end">
         {isAuthenticated ? (
-          <div className="flex items-center gap-4">
-            <span>
+          <>
+            <span className="text-zinc-300">
               Welcome, {user?.name}
             </span>
 
-        {isAuthenticated && (
-          <Link to="/bookings">
-            <li>My Bookings</li>
-          </Link>
-        )}
+            <Link
+              to="/bookings"
+              className="rounded-md px-3 py-2 text-zinc-200 transition-colors hover:bg-zinc-900 hover:text-white"
+            >
+              My Bookings
+            </Link>
 
             <button
               onClick={handleLogout}
-              className="bg-red-500 px-3 py-1 rounded cursor-pointer"
+              className="rounded-md bg-red-600 px-4 py-2 font-medium text-white transition-colors hover:bg-red-500 cursor-pointer"
             >
               Logout
             </button>
-          </div>
+          </>
         ) : (
           <>
-            <Link to="/login">
-              <li>Login</li>
+            <Link
+              to="/login"
+              className="rounded-md px-3 py-2 text-zinc-200 transition-colors hover:bg-zinc-900 hover:text-white"
+            >
+              Login
             </Link>
 
-            <Link to="/signup">
-              <li>Sign Up</li>
+            <Link
+              to="/signup"
+              className="rounded-md bg-red-600 px-4 py-2 font-medium text-white transition-colors hover:bg-red-500"
+            >
+              Sign Up
             </Link>
           </>
         )}
-
-      </ul>
-    </div>
+      </div>
+    </nav>
   );
 };
 

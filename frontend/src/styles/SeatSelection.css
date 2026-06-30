@@ -13,32 +13,163 @@ html {
   color: white;
 } */
 
+.booking-dark-page {
+  min-height: 100vh;
+  background: #080808;
+  color: #f8fafc;
+}
+
+.booking-surface {
+  background: #111;
+  border: 1px solid #27272a;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.ticket-counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  background: #151518;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
 .ticket-counter button{
-  font-size: 22px;
-  margin-left: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #0b0b0c;
+  border: none;
+  color: #f8fafc;
+  font-size: 20px;
+  line-height: 1;
   cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.ticket-counter button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
 }
 
 .back-button {
-  color: #333;
+  color: #d4d4d8;
   font-weight: 600;
 }
 
 .back-button:hover {
-  color: red
+  color: #f87171;
+}
+
+.seat-button {
+    box-shadow: 0 1px 3px 0 rgb(209 213 219 / 0.3),
+              0 1px 2px -1px rgb(209 213 219 / 0.1);
+  border: none;
+  outline: none;
+}
+
+.seat-button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.seat-button:disabled {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.04);
+}
+
+.seats-scroll {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.seats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(100%, 620px);
+  min-width: 360px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .ticket-counter {
+    width: auto;
+    justify-content: center;
+    align-self: stretch;
+  }
+
+  .row-label {
+    margin-right: 14px;
+    min-width: 16px;
+  }
+
+  .seat-button {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.06);
+  }
 }
 
 .screen-line {
-  box-shadow: 5px 10px 30px 3px rgba(255, 0, 0, 0.267);
+  box-shadow: 0 16px 42px 6px rgba(248, 113, 113, 0.32);
   border-radius: 8px;
   height: 3px;
 }
 
+.screen {
+  transform: translateX(24px);
+}
+
+.selected-seats-info {
+  transform: translateX(24px);
+}
+
 .seat-separator {
   height: 0.1px;
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .pay-button {
-  box-shadow: rgba(252, 1, 14, 0.2) 0px 8px 24px;
+  box-shadow: rgba(252, 1, 14, 0.3) 0px 14px 34px;
 }
 
+.pay-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.seat-pay-bar {
+  position: sticky;
+  bottom: 20px;
+  width: min(420px, calc(100% - 32px));
+  margin: 0 auto 20px;
+  z-index: 10;
+}
+
+.modal-fade {
+  animation: modalFade 180ms ease-out;
+}
+
+.modal-pop {
+  animation: modalPop 200ms ease-out;
+}
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

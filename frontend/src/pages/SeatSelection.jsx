@@ -48,9 +48,9 @@ const SeatSelection = () => {
 
   if (loading) {
     return (
-      <div>
+      <div className='booking-dark-page'>
         <Navbar/>
-        <div className='flex justify-center items-center mt-20'>
+        <div className='flex justify-center items-center mt-20 text-white'>
           <p className='text-3xl font-bold'>Loading seats...</p>
         </div>
       </div>
@@ -59,9 +59,9 @@ const SeatSelection = () => {
 
   if (!show) {
     return (
-      <div>
+      <div className='booking-dark-page'>
         <Navbar/>
-        <div className='flex justify-center items-center mt-20'>
+        <div className='flex justify-center items-center mt-20 text-white'>
           <p className='text-3xl font-bold'>Show not found.</p>
         </div>
       </div>
@@ -192,62 +192,74 @@ const SeatSelection = () => {
   }
 
   return (
-    <div>
+    <div className='booking-dark-page'>
       <Navbar/>
 
       <div className='main-wrapper items-center'>
-        <div className="top-section p-5 w-full">
-          <Link
-            to={`/movies/${movieData._id}/shows`}
-            className='back-button'
-            onClick={() => sessionStorage.removeItem("selectedSeats")}
-          >
-            &larr; Back
-          </Link>
+        <div className="top-section w-full px-4 pt-5 sm:px-6">
+          <div className='mx-auto w-full max-w-5xl'>
+            <Link
+              to={`/movies/${movieData._id}/shows`}
+              className='back-button'
+              onClick={() => sessionStorage.removeItem("selectedSeats")}
+            >
+              &larr; Back
+            </Link>
 
-          <div className='flex justify-between mt-3 items-center'>
-            <div className='flex flex-col gap-0.5 '>
-              <p className='text-2xl font-regular'>{movieData.title}</p>
-              <p className='text-gray-700'>
-                {show.theatre?.name} - {show.screen}
-              </p>
-              <p className='text-gray-500'>{show.date} at {show.time}</p>
+            <div className='mt-5 rounded-xl bg-[#0d0d0f] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_14px_34px_rgba(0,0,0,0.28)] sm:p-6'>
+              <div className='flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between'>
+                <div>
+                  <p className='text-2xl font-bold leading-tight text-white sm:text-3xl'>{movieData.title}</p>
+                  <div className='mt-2 flex flex-col gap-1'>
+                    <p className='text-base font-medium text-zinc-200 sm:text-lg'>
+                      {show.theatre?.name} <span className='text-zinc-500'>-</span> {show.screen}
+                    </p>
+                    <p className='text-sm text-zinc-500'>
+                      {show.date} at {show.time}
+                    </p>
+                  </div>
+                </div>
+
+                <div className='ticket-counter'>
+                  <button type='button' aria-label='Decrease tickets' onClick={() => tickets > 1 ? setTickets(tickets - 1) : null}>-</button>
+                  <div className='min-w-24 text-center'>
+                    <p className='text-xl font-bold text-white'>{tickets}</p>
+                    <p className='text-xs font-medium text-red-300'>{tickets === 1 ? "Ticket" : "Tickets"}</p>
+                  </div>
+                  <button type='button' aria-label='Increase tickets' onClick={() => tickets < 10 ? setTickets(tickets + 1) : null}>+</button>
+                </div>
+              </div>
             </div>
 
-            <div className='ticket-counter'>
-              <p className='font-regular text-red-500 underline cursor-pointer'>{tickets} Tickets</p>
-              <button onClick={() => tickets < 10 ? setTickets(tickets + 1) : null}>+</button>
-              <button onClick={() => tickets > 1 ? setTickets(tickets - 1) : null}>-</button>
-            </div>
-          </div>
-
-          <div className='flex justify-end mt-4'>
-            <label className='flex items-center gap-2 text-sm cursor-pointer'>
+            <div className='flex justify-start mt-4 sm:justify-end'>
+              <label className='flex items-center gap-2 text-sm cursor-pointer text-zinc-300'>
               <input
                 type="checkbox"
                 checked={autoSelectEnabled}
                 onChange={(e) => setAutoSelectEnabled(e.target.checked)}
               />
               Auto-select nearby seats
-            </label>
+              </label>
+            </div>
           </div>
         </div>
 
-        <div className='seat-ui flex flex-col justify-center align-middle items-center mt-10 mb-12 w-3/4'>
+        <div className='seat-ui flex flex-col justify-center align-middle items-center mt-8 mb-12 w-full px-3 text-zinc-200 sm:mt-10 sm:w-3/4 sm:px-4'>
           <div className='screen flex flex-col items-center gap-1 align-middle'>
             <div title="Theatre screen" className="screen-line w-70 bg-red-400 rounded-3xl"></div>
-            <p className='mt-1.5 mb-9'>All eyes this way!</p>
+            <p className='mt-1.5 mb-9 text-zinc-400'>All eyes this way!</p>
           </div>
 
-          <div className='flex flex-col justify-center items-center mb-5'>
+          <div className='selected-seats-info flex flex-col justify-center items-center mb-5'>
             {selectedSeats.length > 0 ? (
-              <p className='text-sm'>Selected Seats: {selectedSeats.join(', ')}</p>
+              <p className='text-sm text-zinc-200'>Selected Seats: {selectedSeats.join(', ')}</p>
             ) : (
-              <p className='text-sm'>Your perfect view is one tap away!</p>
+              <p className='text-sm text-zinc-400'>Your perfect view is one tap away!</p>
             )}
           </div>
 
-          <div className="seats flex flex-col gap-3">
+          <div className="seats-scroll">
+          <div className="seats-grid">
             {displayTheatreLayout.map((item) => {
               const rowSeats = displaySeats.filter((seat) => seat.row === item.row)
 
@@ -257,9 +269,9 @@ const SeatSelection = () => {
 
               if (item.type === 'separator') {
                 return (
-                  <div key={item.id} className='mt-3'>
-                    <p>{item.label} - &#8377;{item.price}</p>
-                    <div className='w-full seat-separator bg-gray-400'></div>
+                  <div key={item.id} className='mt-3 w-full'>
+                    <p className='text-sm font-medium text-zinc-400'>{item.label} - &#8377;{item.price}</p>
+                    <div className='w-full seat-separator'></div>
                   </div>
                 )
               }
@@ -267,23 +279,24 @@ const SeatSelection = () => {
               if (item.type === "row") {
                 return (
                   <div key={item.id} className='flex gap-3 items-center justify-center w-full'>
-                    <p className='row-label mr-10 font-light text-gray-600'>{item.row}</p>
+                    <p className='row-label mr-10 font-light text-zinc-500'>{item.row}</p>
 
                     {rowSeats.map((seat) => {
-                      let seatBgColor = 'white'
-                      let seatTextColor = 'black'
+                      let seatBgColor = '#050505'
+                      let seatTextColor = '#e4e4e7'
                       let seatCursor = 'pointer'
                       let seatOpacity = 100
                       let seatWidth = 40
                       let seatHeight = 40
 
                       if (selectedSeats.includes(seat.id)) {
-                        seatBgColor = 'green'
+                        seatBgColor = '#22c55e'
                         seatTextColor = 'white'
                       }
 
                       if (seat.status === "booked") {
-                        seatBgColor = 'grey'
+                        seatBgColor = '#101010'
+                        seatTextColor = '#a1a1aa'
                         seatCursor = 'not-allowed'
                       }
 
@@ -303,13 +316,13 @@ const SeatSelection = () => {
                           disabled={seat.status === "booked" || seat.type !== "seat"}
                           title={seat.status === "booked" ? "Seat is already booked!" : null}
                           key={seat.id}
-                          className='font-medium shadow shadow-gray-300 cursor-pointer transition-colors ease-in-out duration-100 rounded'
+                          className='seat-button font-medium cursor-pointer transition-all ease-in-out duration-100 rounded'
                           style={{
                             backgroundColor: seatBgColor,
                             color: seatTextColor,
                             cursor: seatCursor,
                             opacity: seatOpacity,
-                            fontSize: '15px',
+                            fontSize: '14px',
                             width: seatWidth,
                             height: seatHeight,
                           }}
@@ -323,11 +336,12 @@ const SeatSelection = () => {
               }
             })}
           </div>
+          </div>
         </div>
 
         {selectedSeats.length > 0 ? (
           <button
-            className='flex items-center align-middle justify-center gap-2 p-3 w-1/3 bg-red-500 rounded text-white pay-button cursor-pointer left-1/2 -translate-x-1/2 sticky bottom-5'
+            className='seat-pay-bar flex items-center align-middle justify-center gap-2 bg-red-600 p-3 text-white pay-button cursor-pointer transition-colors hover:bg-red-500'
             onClick={handlePayment}
           >
             Pay <span>&#8377;{totalAmount}</span>
