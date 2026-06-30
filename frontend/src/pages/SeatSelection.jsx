@@ -22,19 +22,25 @@ const SeatSelection = () => {
   })
   const [tickets, setTickets] = useState(selectedTicketCount)
   const [autoSelectEnabled, setAutoSelectEnabled] = useState(false)
+  const [error, setError] = useState("")
 
-  useEffect(() => {
-    const fetchShow = async () => {
+  const fetchShow = async () => {
+      setShow(null)
+      setLoading(true)
+
       try {
+        setError("")
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/shows/${showId}`)
         setShow(response.data)
       } catch (error) {
         console.log("Failed to fetch show", error)
+        setError("Unable to load seats. Please try again later.")
       } finally {
         setLoading(false)
       }
     }
 
+  useEffect(() => {
     fetchShow()
   }, [showId])
 
@@ -50,8 +56,24 @@ const SeatSelection = () => {
     return (
       <div className='booking-dark-page'>
         <Navbar/>
-        <div className='flex justify-center items-center mt-20 text-white'>
-          <p className='text-3xl font-bold'>Loading seats...</p>
+        <div className='cinema-loader'>
+          <div className='cinema-loader-screen'></div>
+          <div className='cinema-loader-spinner'></div>
+          <p className='cinema-loader-title'>Preparing seats...</p>
+          <p className='cinema-loader-text'>Loading latest availability</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className='booking-dark-page'>
+        <Navbar/>
+        <div className='error-state-card'>
+          <h2>Something went wrong</h2>
+          <p>{error}</p>
+          <button className='error-state-link' onClick={fetchShow}>Retry</button>
         </div>
       </div>
     )
@@ -195,7 +217,7 @@ const SeatSelection = () => {
     <div className='booking-dark-page'>
       <Navbar/>
 
-      <div className='main-wrapper items-center'>
+      <div className='main-wrapper items-center page-fade-in'>
         <div className="top-section w-full px-4 pt-5 sm:px-6">
           <div className='mx-auto w-full max-w-5xl'>
             <Link
@@ -290,7 +312,7 @@ const SeatSelection = () => {
                       let seatHeight = 40
 
                       if (selectedSeats.includes(seat.id)) {
-                        seatBgColor = '#22c55e'
+                        seatBgColor = '#00b84a'
                         seatTextColor = 'white'
                       }
 

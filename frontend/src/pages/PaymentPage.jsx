@@ -83,7 +83,7 @@ const convFee = Number((totalPrice * 2.7 / 100).toFixed(2))
   return (
     <div className='booking-dark-page main-wrapper'>
       <Navbar/>
-      <main className='mx-auto w-full max-w-3xl px-5 py-8'>
+      <main className='page-fade-in mx-auto w-full max-w-3xl px-5 py-8'>
         <Link to={`/shows/${showId}/seats`} className='back-button'>&larr; Back</Link>
 
         <div className='mt-6 rounded-lg border border-zinc-800 bg-zinc-950 p-6'>

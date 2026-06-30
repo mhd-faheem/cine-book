@@ -8,7 +8,6 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     navigate("/");
-    alert("Logged out successfully.")
   };
 
   return (

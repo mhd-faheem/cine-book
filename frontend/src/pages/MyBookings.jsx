@@ -9,10 +9,13 @@ import '../styles/SeatSelection.css'
 const MyBookings = () => {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
-  useEffect(() => {
-    const fetchBookings = async () => {
+  const fetchBookings = async () => {
+      setLoading(true)
+
       try {
+        setError("")
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/bookings/my`, {
           headers: {
             Authorization: `Bearer ${getToken()}`,
@@ -22,11 +25,13 @@ const MyBookings = () => {
         setBookings(response.data)
       } catch (error) {
         console.log("Failed to fetch bookings", error.response?.data || error)
+        setError("Unable to load your bookings. Please try again later.")
       } finally {
         setLoading(false)
       }
     }
 
+  useEffect(() => {
     fetchBookings()
   }, [])
 
@@ -34,9 +39,27 @@ const MyBookings = () => {
     return (
       <div className='booking-dark-page'>
         <Navbar/>
-        <div className="flex flex-col items-center justify-center mt-20 text-center">
-          <p className="text-2xl font-bold text-white">Loading bookings...</p>
-          <p className="mt-2 text-zinc-500">Finding your tickets.</p>
+        <div className="cinema-loader">
+          <div className="cinema-loader-screen"></div>
+          <div className="cinema-loader-spinner"></div>
+          <p className="cinema-loader-title">Loading bookings...</p>
+          <p className="cinema-loader-text">Finding your tickets</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className='booking-dark-page'>
+        <Navbar/>
+        <div className='error-state-card'>
+          <h2>Something went wrong</h2>
+          <p>{error}</p>
+          <div className='error-state-actions'>
+            <button className='error-state-link' onClick={fetchBookings}>Retry</button>
+            <Link to={`/`} className='error-state-link secondary'>Back to home</Link>
+          </div>
         </div>
       </div>
     )
@@ -102,13 +125,14 @@ const MyBookings = () => {
       setBookings(updatedBookings)
     } catch (error) {
       console.log("Failed to cancel booking", error.response?.data || error)
+      alert(error.response?.data?.message || "Failed to cancel booking. Please try again.")
     }
   }
 
   return (
     <div className='booking-dark-page'>
       <Navbar/>
-      <main className='mx-auto flex w-full max-w-5xl flex-col gap-5 px-5 py-8'>
+      <main className='page-fade-in mx-auto flex w-full max-w-5xl flex-col gap-5 px-5 py-8'>
         <Link to={`/`} className='back-button'>&larr; Back to Home</Link>
 
         <div>

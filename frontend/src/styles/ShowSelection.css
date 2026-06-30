@@ -1,0 +1,301 @@
+.show-page {
+    min-height: 100vh;
+    background: #121212;
+    color: #ffffff;
+}
+
+.show-container {
+    width: min(1200px, calc(100% - 40px));
+    margin: auto;
+    padding: 35px 0 60px;
+}
+
+.back-link {
+    color: #b5b5b5;
+    text-decoration: none;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.back-link:hover {
+    color: #ef4444;
+}
+
+.show-header {
+    margin-top: 25px;
+    margin-bottom: 35px;
+}
+
+.show-header h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: white;
+}
+
+.show-header p {
+    margin-top: 8px;
+    color: #9ca3af;
+    font-size: 16px;
+}
+
+/* DATE BUTTONS */
+
+.date-selector {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 35px;
+}
+
+.date-btn {
+    background: #1d1d1d;
+    color: #cfcfcf;
+    border: 1px solid #333;
+    padding: 12px 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .25s;
+    font-weight: 500;
+}
+
+.date-btn:hover {
+    border-color: #ef4444;
+    color: white;
+}
+
+.date-btn.active {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: white;
+}
+
+/* THEATRE CARD */
+
+.theatre-list {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.theatre-card {
+    background: #1b1b1b;
+    border: 1px solid #2d2d2d;
+    border-radius: 16px;
+    padding: 22px;
+    transition: .25s;
+}
+
+.theatre-card:hover {
+    border-color: #ef4444;
+    transform: translateY(-3px);
+}
+
+.theatre-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.theatre-info h2 {
+    font-size: 22px;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.theatre-info p {
+    color: #9ca3af;
+    font-size: 15px;
+}
+
+.screen-badge {
+    background: #2b2b2b;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 999px;
+    font-size: 14px;
+}
+
+/* SHOW TIMES */
+
+.show-times {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.time-btn {
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #ef4444;
+    padding: 11px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .25s;
+    font-weight: 600;
+}
+
+.time-btn:hover {
+    background: #ef4444;
+    color: white;
+}
+
+/* LOADING */
+
+.show-loading,
+.no-shows {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    color: white;
+    font-size: 22px;
+}
+
+/* MODAL */
+
+.ticket-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.ticket-modal {
+    width: 100%;
+    max-width: 420px;
+    background: #1b1b1b;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.5);
+}
+
+.ticket-modal h2 {
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.ticket-modal p {
+    color: #b5b5b5;
+    margin-top: 4px;
+}
+
+.ticket-counter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 35px 0;
+}
+
+.ticket-counter button {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid #444;
+    background: #2a2a2a;
+    color: white;
+    cursor: pointer;
+    font-size: 22px;
+    transition: .25s;
+}
+
+.ticket-counter button:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+}
+
+.ticket-count {
+    font-size: 34px;
+    font-weight: bold;
+    width: 50px;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.cancel-btn,
+.continue-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: .25s;
+}
+
+.cancel-btn {
+    background: transparent;
+    color: white;
+    border: 1px solid #555;
+}
+
+.cancel-btn:hover {
+    background: #2b2b2b;
+}
+
+.continue-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+}
+
+.continue-btn:hover {
+    background: #dc2626;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+.show-container{
+    width:calc(100% - 24px);
+}
+
+.show-header h1{
+    font-size:2rem;
+}
+
+.theatre-info{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.show-times{
+    gap:10px;
+}
+
+.time-btn{
+    flex:1;
+}
+
+}
+
+@media(max-width:500px){
+
+.date-btn{
+    flex:1;
+}
+
+.ticket-modal{
+    padding:22px;
+}
+
+.ticket-counter{
+    gap:20px;
+}
+
+.ticket-counter button{
+    width:42px;
+    height:42px;
+}
+
+}

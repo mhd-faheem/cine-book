@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import "../styles/SeatSelection.css";
@@ -13,10 +13,19 @@ const ShowSelection = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedShow, setSelectedShow] = useState(null);
   const [ticketCount, setTicketCount] = useState(1);
+  const [error, setError] = useState("");
+  const [isModalClosing, setIsModalClosing] = useState(false);
+  const closeTimeoutRef = useRef(null);
 
-  useEffect(() => {
-    const fetchPageData = async () => {
+  const getDateKey = (dateValue) => {
+    return String(dateValue || "").slice(0, 10);
+  };
+
+  const fetchPageData = async () => {
+      setMovie(null);
+
       try {
+        setError("");
         const movieResponse = await axios.get(
           `${import.meta.env.VITE_API_URL}/movies/${id}`
         );
@@ -28,20 +37,30 @@ const ShowSelection = () => {
         setShows(showsResponse.data);
 
         if (showsResponse.data.length > 0) {
-          setSelectedDate(showsResponse.data[0].date);
+          setSelectedDate(getDateKey(showsResponse.data[0].date));
         }
       } catch (error) {
         console.log("Failed to fetch show selection data", error);
+        setError("Unable to load showtimes. Please try again later.");
       }
     };
 
+  useEffect(() => {
     fetchPageData();
   }, [id]);
 
-  const availableDates = [...new Set(shows.map((show) => show.date))];
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const availableDates = [...new Set(shows.map((show) => getDateKey(show.date)))];
 
   const filteredShows = shows.filter((show) => {
-    return show.date === selectedDate;
+    return getDateKey(show.date) === selectedDate;
   });
 
   const groupedShows = filteredShows.reduce((groups, show) => {
@@ -62,13 +81,46 @@ const ShowSelection = () => {
 
   const showGroups = Object.values(groupedShows);
 
+  const duplicateDayMonthKeys = availableDates.reduce((counts, dateValue) => {
+    const [, month, day] = dateValue.split("-");
+    const key = `${month}-${day}`;
+
+    counts[key] = (counts[key] || 0) + 1;
+
+    return counts;
+  }, {});
+
+  const formatDateLabel = (dateValue) => {
+    const [year, month, day] = getDateKey(dateValue).split("-");
+    const shouldShowYear = duplicateDayMonthKeys[`${month}-${day}`] > 1;
+    const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+
+    const label = date.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      weekday: "short",
+      timeZone: "UTC",
+    });
+
+    if (!shouldShowYear) {
+      return label;
+    }
+
+    return `${label} '${String(date.getFullYear()).slice(2)}`;
+  };
+
   const openTicketModal = (show) => {
+    setIsModalClosing(false);
     setSelectedShow(show);
     setTicketCount(1);
   };
 
   const closeTicketModal = () => {
-    setSelectedShow(null);
+    setIsModalClosing(true);
+    closeTimeoutRef.current = setTimeout(() => {
+      setSelectedShow(null);
+      setIsModalClosing(false);
+    }, 180);
   };
 
   const handleSelectSeats = () => {
@@ -81,12 +133,31 @@ const ShowSelection = () => {
     });
   };
 
+  if (error) {
+    return (
+      <div className="booking-dark-page">
+        <Navbar />
+        <div className="error-state-card">
+          <h2>Something went wrong</h2>
+          <p>{error}</p>
+          <div className="error-state-actions">
+            <button className="error-state-link" onClick={fetchPageData}>Retry</button>
+            <Link to={`/movies/${id}`} className="error-state-link secondary">Back to movie</Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!movie) {
     return (
       <div className="booking-dark-page">
         <Navbar />
-        <div className="flex justify-center items-center mt-20 text-white">
-          <p className="text-3xl font-bold">Loading shows...</p>
+        <div className="cinema-loader">
+          <div className="cinema-loader-screen"></div>
+          <div className="cinema-loader-spinner"></div>
+          <p className="cinema-loader-title">Finding showtimes...</p>
+          <p className="cinema-loader-text">Checking available theatres</p>
         </div>
       </div>
     );
@@ -96,7 +167,7 @@ const ShowSelection = () => {
     <div className="booking-dark-page">
       <Navbar />
 
-      <main className="mx-auto w-full max-w-5xl px-5 py-8">
+      <main className="page-fade-in mx-auto w-full max-w-5xl px-5 py-8">
         <Link to={`/movies/${id}`} className="back-button">
           &larr; Back to movie
         </Link>
@@ -117,11 +188,11 @@ const ShowSelection = () => {
                   onClick={() => setSelectedDate(date)}
                   className={
                     selectedDate === date
-                      ? "px-4 py-2 rounded-lg bg-red-600 text-white cursor-pointer"
-                      : "px-4 py-2 rounded-lg bg-zinc-950 text-zinc-300 shadow-[0_0_10px_rgba(255,255,255,0.06)] cursor-pointer hover:text-white"
+                      ? "px-4 py-2 rounded-lg bg-zinc-900 text-red-300 shadow-[inset_0_0_0_1px_rgba(239,68,68,0.55)] cursor-pointer"
+                      : "px-4 py-2 rounded-lg bg-zinc-950 text-zinc-400 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] cursor-pointer hover:text-white hover:bg-zinc-900"
                   }
                 >
-                  {date}
+                  {formatDateLabel(date)}
                 </button>
               ))}
             </div>
@@ -161,8 +232,8 @@ const ShowSelection = () => {
       </main>
 
       {selectedShow && (
-        <div className="modal-fade fixed inset-0 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
-          <div className="modal-pop w-full max-w-sm rounded-lg border border-zinc-800 bg-zinc-950 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.45)]">
+        <div className={`${isModalClosing ? "modal-fade-out" : "modal-fade"} fixed inset-0 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm`}>
+          <div className={`${isModalClosing ? "modal-scale-out" : "modal-pop"} w-full max-w-sm rounded-lg border border-zinc-800 bg-zinc-950 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.45)]`}>
             <h2 className="text-2xl font-bold text-white">Select Tickets</h2>
             <p className="text-zinc-400 mt-2">
               {selectedShow.theatre?.name} - {selectedShow.screen}
