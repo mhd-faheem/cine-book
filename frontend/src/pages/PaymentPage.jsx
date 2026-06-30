@@ -70,7 +70,7 @@ const convFee = Number((totalPrice * 2.7 / 100).toFixed(2))
     sessionStorage.removeItem("selectedSeats");
     sessionStorage.removeItem("selectedTicketCount");
 
-    toast.success("Booking confirmed successfully!");
+    toast.success("Booking confirmed!");
 
     navigate("/bookings");
     } catch (error) {

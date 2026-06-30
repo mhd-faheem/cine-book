@@ -22,7 +22,7 @@ const Navbar = () => {
 const confirmLogout = () => {
   logout();
   toast.success("Logged out successfully!");
-  navigate("/");
+  navigate("/login");
   setShowLogoutModal(false);
 };
 
@@ -55,7 +55,7 @@ const cancelLogout = () => {
 
             <button
   onClick={() => setShowProfile(true)}
-  className="flex items-center gap-2 px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm hover:bg-zinc-700 hover:border-zinc-500 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+  className="flex items-center gap-2 px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm hover:bg-zinc-700 hover:border-zinc-500 transition-all duration-200 cursor-pointer"
 >
   <FaUserCircle className="text-base text-gray-300" />
   <span className="font-medium">Profile</span>
@@ -65,13 +65,13 @@ const cancelLogout = () => {
         ) : (
           <>
             <Link to="/login">
-              <li className="px-5 py-2 rounded-lg border border-zinc-600 text-gray-200 hover:border-red-500 hover:text-white hover:-translate-y-0.5 transition-all duration-200">
+              <li className="px-5 py-2 rounded-lg border border-zinc-600 text-gray-200 hover:border-red-500 hover:text-white transition-all duration-200">
                 Login
               </li>
             </Link>
 
             <Link to="/signup">
-              <li className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 hover:-translate-y-0.5 shadow-md hover:shadow-red-600/20 transition-all duration-200">
+              <li className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 shadow-md hover:shadow-red-600/20 transition-all duration-200">
                 Sign Up
               </li>
             </Link>

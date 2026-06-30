@@ -4,6 +4,7 @@ import '../styles/SeatSelection.css'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../context/AuthContext.jsx'
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
 const SeatSelection = () => {
   const { isAuthenticated } = useAuth()
@@ -190,12 +191,30 @@ const SeatSelection = () => {
   function handlePayment() {
     if (!isAuthenticated) {
       sessionStorage.setItem("redirectAfterLogin", `/shows/${showId}/seats`)
-      alert("Please login before booking your seats.")
+      toast("Please login before booking your seats.", {
+        icon: (
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-xs font-bold text-white">
+            !
+          </span>
+        ),
+      })
       navigate("/login")
       return
     }
 
     if (tickets !== selectedSeats.length) {
+      const remainingSeats = tickets - selectedSeats.length
+      const message = remainingSeats > 0
+        ? `Please select ${remainingSeats} more ${remainingSeats === 1 ? "seat" : "seats"} to continue.`
+        : `Please clear ${Math.abs(remainingSeats)} selected ${Math.abs(remainingSeats) === 1 ? "seat" : "seats"} to continue.`
+
+      toast(message, {
+        icon: (
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-xs font-bold text-white">
+            !
+          </span>
+        ),
+      })
       return
     }
 
@@ -278,6 +297,14 @@ const SeatSelection = () => {
             ) : (
               <p className='text-sm text-zinc-400'>Your perfect view is one tap away!</p>
             )}
+            <button
+              type='button'
+              className={`mt-1 text-sm text-red-400 underline underline-offset-4 transition-colors hover:text-red-300 ${selectedSeats.length === 0 ? "invisible pointer-events-none" : ""}`}
+              onClick={() => setSelectedSeats([])}
+              disabled={selectedSeats.length === 0}
+            >
+              Clear selection
+            </button>
           </div>
 
           <div className="seats-scroll">
@@ -312,7 +339,7 @@ const SeatSelection = () => {
                       let seatHeight = 40
 
                       if (selectedSeats.includes(seat.id)) {
-                        seatBgColor = '#00b84a'
+                        seatBgColor = '#00C907'
                         seatTextColor = 'white'
                       }
 

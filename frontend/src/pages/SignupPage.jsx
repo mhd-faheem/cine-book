@@ -128,7 +128,7 @@ navigate("/login");
     </nav>
 
     {/* Signup Form */}
-    <div className="flex items-center justify-center px-4 py-12">
+    <div className="page-fade-in flex items-center justify-center px-4 py-12">
       <form
         onSubmit={handleSignup}
         className="bg-zinc-900 p-8 rounded-3xl w-full max-w-md pb-4"

@@ -131,6 +131,7 @@ html {
 
 .pay-button {
   box-shadow: rgba(252, 1, 14, 0.3) 0px 14px 34px;
+  border-radius: 5px;
 }
 
 .pay-button:disabled {

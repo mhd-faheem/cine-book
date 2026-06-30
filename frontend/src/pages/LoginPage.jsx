@@ -85,21 +85,21 @@ if (redirectPath) {
     <nav className="flex items-center justify-between px-8 py-5 border-b border-zinc-800">
       <Link
         to="/"
-        className="text-3xl font-extrabold text-red-500"
+        className="text-3xl font-extrabold text-red-500 hover:text-red-400 transition"
       >
         CineBook
       </Link>
 
-      {/* <Link
-        to="/signup"
+      <Link
+        to="/"
         className="text-sm text-gray-300 hover:text-red-500 transition"
       >
-        Create Account
-      </Link> */}
+        Browse as Guest
+      </Link>
     </nav>
 
     {/* Center Form */}
-    <div className="flex items-center justify-center min-h-[calc(100vh-81px)] px-4">
+    <div className="page-fade-in flex items-center justify-center min-h-[calc(100vh-81px)] px-4">
 
       <form
         onSubmit={handleLogin}

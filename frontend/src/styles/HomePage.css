@@ -87,11 +87,6 @@
 .movie-card {
     color: white;
     text-decoration: none;
-    transition: .25s ease;
-}
-
-.movie-card:hover {
-    transform: translateY(-6px);
 }
 
 .movie-poster-frame {
@@ -102,6 +97,7 @@
     border-radius: 14px;
     background: #111113;
     box-shadow: 0 10px 25px rgba(0,0,0,.6);
+    transition: box-shadow .35s ease;
 }
 
 .movie-poster-frame img {
@@ -109,7 +105,8 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: opacity .25s ease, filter .25s ease;
+    transform: scale(1);
+    transition: opacity .25s ease, filter .35s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
 }
 
 .poster-loading {
@@ -130,6 +127,13 @@
 
 .movie-card:hover .movie-poster-frame img {
     filter: brightness(1.08);
+    transform: scale(1.06);
+}
+
+.movie-card:hover .movie-poster-frame {
+    box-shadow:
+        0 14px 34px rgba(0,0,0,.62),
+        0 0 24px rgba(255,255,255,.18);
 }
 
 @keyframes posterSkeleton {

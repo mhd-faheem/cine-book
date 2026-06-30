@@ -71,7 +71,7 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
         {/* Total Movies */}
-        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 shadow-lg hover:border-red-500/40 hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm text-gray-400">
@@ -94,7 +94,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Total Bookings */}
-        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 shadow-lg hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm text-gray-400">
@@ -117,7 +117,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Total Users */}
-        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 shadow-lg hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm text-gray-400">

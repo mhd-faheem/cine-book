@@ -64,7 +64,7 @@ const ProfileDrawer = ({
           <Link
             to="/bookings"
             onClick={onClose}
-            className="group flex items-center justify-between px-4 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition-all duration-200 hover:-translate-y-0.5"
+            className="group flex items-center justify-between px-4 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition-all duration-200"
           >
             <div className="flex items-center gap-3">
               <FaTicketAlt className="text-red-500 group-hover:text-red-400 transition-colors" />
@@ -81,7 +81,7 @@ const ProfileDrawer = ({
 
           <button
             onClick={onLogout}
-            className="group w-full flex items-center justify-between px-4 py-3 rounded-xl bg-zinc-800 hover:bg-red-600 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+            className="group w-full flex items-center justify-between px-4 py-3 rounded-xl bg-zinc-800 hover:bg-red-600 transition-all duration-200 cursor-pointer"
           >
             <div className="flex items-center gap-3">
               <FaSignOutAlt className="text-red-500 group-hover:text-white transition-colors" />
