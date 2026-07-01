@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import '../styles/MovieDetails.css'
+import '../styles/SeatSelection.css'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Navbar from '../components/Navbar.jsx'
@@ -8,26 +9,50 @@ const MovieDetails = () => {
   const { id } = useParams()
 
   const [movie, setMovie] = useState(null)
+  const [error, setError] = useState("")
 
-  useEffect(() => {
   const fetchMovie = async () => {
+      setMovie(null)
+
       try {
+        setError("")
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/movies/${id}`)
         setMovie(response.data)
       } catch (error) {
         console.log("Failed to fetch movie", error)
+        setError("Unable to load movie details. Please try again later.")
       }
     }
 
+  useEffect(() => {
     fetchMovie()
   }, [id])
 
+  if(error){
+    return (
+      <div className='booking-dark-page'>
+        <Navbar/>
+        <div className='error-state-card'>
+          <h2>Something went wrong</h2>
+          <p>{error}</p>
+          <div className='error-state-actions'>
+            <button className='error-state-link' onClick={fetchMovie}>Retry</button>
+            <Link to='/' className='error-state-link secondary'>Back to home</Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if(!movie){
     return (
-      <div>
+      <div className='booking-dark-page'>
         <Navbar/>
-        <div className='flex justify-center align-middle items-center mt-50'>
-          <p className='text-3xl font-bold'>Loading movie details...</p>
+        <div className='cinema-loader'>
+          <div className='cinema-loader-screen'></div>
+          <div className='cinema-loader-spinner'></div>
+          <p className='cinema-loader-title'>Loading movie...</p>
+          <p className='cinema-loader-text'>Getting movie details</p>
         </div>
       </div>
     )
@@ -37,7 +62,7 @@ const MovieDetails = () => {
     <div className='movie-details-page'>
       <Navbar/>
 
-      <div className='movie-details-hero'>
+      <div className='movie-details-hero page-fade-in'>
         <div className='movie-back-wrap'>
           <Link to='/' className='back-btn'>
             &larr; Back

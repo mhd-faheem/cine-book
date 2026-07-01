@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
@@ -9,7 +10,15 @@ const SignupPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [message, setMessage] = useState('')
+  useEffect(() => {
+  if (error) {
+    const timer = setTimeout(() => {
+      setError("");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }
+}, [error]);
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -21,7 +30,7 @@ const SignupPage = () => {
 
   // reset messages first
   setError("");
-  setMessage("");
+  
 
   const cleanName = name.trim();
   const cleanEmail = email.trim();
@@ -74,11 +83,8 @@ const SignupPage = () => {
     // navigate("/login");
     
 
-    setTimeout(() => {
-      navigate("/login");
-    }, 1500);
-    // setMessage("Signup successful! Please login.");
-    setMessage("Account created successfully! Please login. ");
+    toast.success("Account created successfully! Please login.");
+navigate("/login");
 
     // optional reset
     setName("");
@@ -96,21 +102,40 @@ const SignupPage = () => {
       error.response?.data?.message ||
         "Signup failed"
     );
+    toast.error(
+  error.response?.data?.message || "Signup failed"
+);
   }
 };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black text-white px-4">
+  <div className="min-h-screen bg-black text-white">
+    {/* Top Navbar */}
+    <nav className="flex items-center justify-between px-8 py-5 border-b border-zinc-800">
+      <Link
+        to="/"
+        className="text-3xl font-extrabold text-red-500 hover:text-red-400 transition"
+      >
+        CineBook
+      </Link>
+
+      <Link
+        to="/"
+        className="text-sm text-gray-300 hover:text-red-500 transition"
+      >
+        Browse as Guest
+      </Link>
+    </nav>
+
+    {/* Signup Form */}
+    <div className="page-fade-in flex items-center justify-center px-4 py-12">
       <form
         onSubmit={handleSignup}
         className="bg-zinc-900 p-8 rounded-3xl w-full max-w-md pb-4"
       >
-        
         <h2 className="text-3xl font-bold mb-6 text-red-500 text-center">
           Create Account
         </h2>
-        
-
 
         {/* Name */}
         <input
@@ -123,6 +148,7 @@ const SignupPage = () => {
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
+              e.preventDefault();
               emailRef.current.focus();
             }
           }}
@@ -141,6 +167,7 @@ const SignupPage = () => {
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
+              e.preventDefault();
               passwordRef.current.focus();
             }
           }}
@@ -159,6 +186,7 @@ const SignupPage = () => {
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
+              e.preventDefault();
               confirmRef.current.focus();
             }
           }}
@@ -175,30 +203,28 @@ const SignupPage = () => {
             setConfirmPassword(e.target.value);
             setError("");
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              e.currentTarget.form?.requestSubmit();
+            }
+          }}
           className="w-full p-3 mb-4 bg-zinc-800 rounded-3xl cursor-text"
         />
 
-
         {error && (
-            <p className="text-red-500 text-sm mb-3 text-center">
-                {error}
-            </p>
-            )}
-
-        {message && (
-            <p className="text-green-500 text-sm mb-3 text-center">
-                {message}
-            </p>
+          <p className="text-red-500 text-sm mb-3 text-center">
+            {error}
+          </p>
         )}
 
         {/* Button */}
         <button
           type="submit"
-          className="w-full bg-red-600 py-2 rounded-3xl font-semibold cursor-pointer hover:bg-red-700"
+          className="w-full bg-red-600 py-2 rounded-3xl font-semibold cursor-pointer hover:bg-red-700 transition"
         >
           Sign Up
         </button>
-        
 
         {/* Login Link */}
         <p className="mt-4 text-center text-sm">
@@ -210,19 +236,21 @@ const SignupPage = () => {
             Login
           </Link>
         </p>
-        
-        <div className="flex justify-center mt-6">
-            <button
-                onClick={() => navigate(-1)}
-                className="text-gray-400 hover:text-white text-sm px-3 py-0 cursor-pointer"
-  >
-                ← Back
-            </button>
-        </div>
 
+        {/* Back Button */}
+        <div className="flex justify-center mt-6">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="text-gray-400 hover:text-white text-sm cursor-pointer"
+          >
+            ← Back
+          </button>
+        </div>
       </form>
     </div>
-  );
+  </div>
+);
 };
 
 export default SignupPage;

@@ -1,7 +1,8 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import "../styles/SeatSelection.css";
 
 const ShowSelection = () => {
   const { id } = useParams();
@@ -12,10 +13,19 @@ const ShowSelection = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedShow, setSelectedShow] = useState(null);
   const [ticketCount, setTicketCount] = useState(1);
+  const [error, setError] = useState("");
+  const [isModalClosing, setIsModalClosing] = useState(false);
+  const closeTimeoutRef = useRef(null);
 
-  useEffect(() => {
-    const fetchPageData = async () => {
+  const getDateKey = (dateValue) => {
+    return String(dateValue || "").slice(0, 10);
+  };
+
+  const fetchPageData = async () => {
+      setMovie(null);
+
       try {
+        setError("");
         const movieResponse = await axios.get(
           `${import.meta.env.VITE_API_URL}/movies/${id}`
         );
@@ -27,20 +37,30 @@ const ShowSelection = () => {
         setShows(showsResponse.data);
 
         if (showsResponse.data.length > 0) {
-          setSelectedDate(showsResponse.data[0].date);
+          setSelectedDate(getDateKey(showsResponse.data[0].date));
         }
       } catch (error) {
         console.log("Failed to fetch show selection data", error);
+        setError("Unable to load showtimes. Please try again later.");
       }
     };
 
+  useEffect(() => {
     fetchPageData();
   }, [id]);
 
-  const availableDates = [...new Set(shows.map((show) => show.date))];
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const availableDates = [...new Set(shows.map((show) => getDateKey(show.date)))];
 
   const filteredShows = shows.filter((show) => {
-    return show.date === selectedDate;
+    return getDateKey(show.date) === selectedDate;
   });
 
   const groupedShows = filteredShows.reduce((groups, show) => {
@@ -61,13 +81,46 @@ const ShowSelection = () => {
 
   const showGroups = Object.values(groupedShows);
 
+  const duplicateDayMonthKeys = availableDates.reduce((counts, dateValue) => {
+    const [, month, day] = dateValue.split("-");
+    const key = `${month}-${day}`;
+
+    counts[key] = (counts[key] || 0) + 1;
+
+    return counts;
+  }, {});
+
+  const formatDateLabel = (dateValue) => {
+    const [year, month, day] = getDateKey(dateValue).split("-");
+    const shouldShowYear = duplicateDayMonthKeys[`${month}-${day}`] > 1;
+    const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+
+    const label = date.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      weekday: "short",
+      timeZone: "UTC",
+    });
+
+    if (!shouldShowYear) {
+      return label;
+    }
+
+    return `${label} '${String(date.getFullYear()).slice(2)}`;
+  };
+
   const openTicketModal = (show) => {
+    setIsModalClosing(false);
     setSelectedShow(show);
     setTicketCount(1);
   };
 
   const closeTicketModal = () => {
-    setSelectedShow(null);
+    setIsModalClosing(true);
+    closeTimeoutRef.current = setTimeout(() => {
+      setSelectedShow(null);
+      setIsModalClosing(false);
+    }, 180);
   };
 
   const handleSelectSeats = () => {
@@ -80,33 +133,52 @@ const ShowSelection = () => {
     });
   };
 
+  if (error) {
+    return (
+      <div className="booking-dark-page">
+        <Navbar />
+        <div className="error-state-card">
+          <h2>Something went wrong</h2>
+          <p>{error}</p>
+          <div className="error-state-actions">
+            <button className="error-state-link" onClick={fetchPageData}>Retry</button>
+            <Link to={`/movies/${id}`} className="error-state-link secondary">Back to movie</Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!movie) {
     return (
-      <div>
+      <div className="booking-dark-page">
         <Navbar />
-        <div className="flex justify-center items-center mt-20">
-          <p className="text-3xl font-bold">Loading shows...</p>
+        <div className="cinema-loader">
+          <div className="cinema-loader-screen"></div>
+          <div className="cinema-loader-spinner"></div>
+          <p className="cinema-loader-title">Finding showtimes...</p>
+          <p className="cinema-loader-text">Checking available theatres</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="booking-dark-page">
       <Navbar />
 
-      <div className="p-8">
+      <main className="page-fade-in mx-auto w-full max-w-5xl px-5 py-8">
         <Link to={`/movies/${id}`} className="back-button">
           &larr; Back to movie
         </Link>
 
-        <div className="mt-6">
-          <h1 className="text-3xl font-bold">{movie.title}</h1>
-          <p className="text-gray-600 mt-1">Choose a date and showtime</p>
+        <div className="mt-6 rounded-lg border border-zinc-800 bg-zinc-950 p-5">
+          <h1 className="text-3xl font-bold text-white">{movie.title}</h1>
+          <p className="mt-1 text-zinc-400">Choose a date and showtime</p>
         </div>
 
         {shows.length === 0 ? (
-          <p className="mt-8">No shows available for this movie.</p>
+          <p className="mt-8 text-zinc-400">No shows available for this movie.</p>
         ) : (
           <>
             <div className="flex gap-3 mt-8 flex-wrap">
@@ -116,11 +188,11 @@ const ShowSelection = () => {
                   onClick={() => setSelectedDate(date)}
                   className={
                     selectedDate === date
-                      ? "px-4 py-2 rounded bg-red-500 text-white cursor-pointer"
-                      : "px-4 py-2 rounded border border-gray-300 cursor-pointer"
+                      ? "px-4 py-2 rounded-lg bg-zinc-900 text-red-300 shadow-[inset_0_0_0_1px_rgba(239,68,68,0.55)] cursor-pointer"
+                      : "px-4 py-2 rounded-lg bg-zinc-950 text-zinc-400 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] cursor-pointer hover:text-white hover:bg-zinc-900"
                   }
                 >
-                  {date}
+                  {formatDateLabel(date)}
                 </button>
               ))}
             </div>
@@ -129,15 +201,15 @@ const ShowSelection = () => {
               {showGroups.map((group) => (
                 <div
                   key={`${group.theatre?._id}-${group.screen}`}
-                  className="border border-gray-300 rounded-xl p-5 shadow-[0_6px_20px_rgba(0,0,0,0.08)]"
+                  className="rounded-lg border border-zinc-800 bg-zinc-950 p-5"
                 >
-                  <p className="text-xl font-semibold">
+                  <p className="text-xl font-semibold text-white">
                     {group.theatre?.name}
                   </p>
-                  <p className="text-gray-600">
+                  <p className="mt-1 text-zinc-400">
                     {group.theatre?.location}, {group.theatre?.city}
                   </p>
-                  <p className="mt-2 text-sm text-gray-700">
+                  <p className="mt-2 text-sm text-zinc-500">
                     {group.screen}
                   </p>
 
@@ -146,7 +218,7 @@ const ShowSelection = () => {
                       <button
                         key={show._id}
                         onClick={() => openTicketModal(show)}
-                        className="border border-red-500 text-red-500 px-4 py-2 rounded cursor-pointer hover:bg-red-500 hover:text-white"
+                        className="rounded-lg bg-zinc-900 px-5 py-2.5 text-base font-semibold text-white shadow-[0_0_10px_rgba(255,255,255,0.06)] cursor-pointer hover:bg-red-600"
                       >
                         {show.time}
                       </button>
@@ -157,32 +229,32 @@ const ShowSelection = () => {
             </div>
           </>
         )}
-      </div>
+      </main>
 
       {selectedShow && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center px-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-[0_12px_40px_rgba(0,0,0,0.25)]">
-            <h2 className="text-2xl font-bold">Select Tickets</h2>
-            <p className="text-gray-600 mt-2">
+        <div className={`${isModalClosing ? "modal-fade-out" : "modal-fade"} fixed inset-0 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm`}>
+          <div className={`${isModalClosing ? "modal-scale-out" : "modal-pop"} w-full max-w-sm rounded-lg border border-zinc-800 bg-zinc-950 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.45)]`}>
+            <h2 className="text-2xl font-bold text-white">Select Tickets</h2>
+            <p className="text-zinc-400 mt-2">
               {selectedShow.theatre?.name} - {selectedShow.screen}
             </p>
-            <p className="text-gray-600">
+            <p className="text-zinc-500">
               {selectedShow.date} at {selectedShow.time}
             </p>
 
             <div className="flex items-center justify-center gap-6 mt-8">
               <button
                 onClick={() => ticketCount > 1 ? setTicketCount(ticketCount - 1) : null}
-                className="w-10 h-10 rounded-full border border-gray-300 text-xl cursor-pointer"
+                className="w-10 h-10 rounded-full bg-black text-xl text-white shadow-[0_0_10px_rgba(255,255,255,0.07)] cursor-pointer"
               >
                 -
               </button>
 
-              <p className="text-3xl font-bold w-12 text-center">{ticketCount}</p>
+              <p className="text-3xl font-bold w-12 text-center text-white">{ticketCount}</p>
 
               <button
                 onClick={() => ticketCount < 10 ? setTicketCount(ticketCount + 1) : null}
-                className="w-10 h-10 rounded-full border border-gray-300 text-xl cursor-pointer"
+                className="w-10 h-10 rounded-full bg-black text-xl text-white shadow-[0_0_10px_rgba(255,255,255,0.07)] cursor-pointer"
               >
                 +
               </button>
@@ -191,14 +263,14 @@ const ShowSelection = () => {
             <div className="flex gap-3 mt-8">
               <button
                 onClick={closeTicketModal}
-                className="flex-1 border border-gray-300 py-2 rounded cursor-pointer"
+                className="flex-1 rounded-lg bg-zinc-800 py-2 text-zinc-200 cursor-pointer hover:bg-zinc-700"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleSelectSeats}
-                className="flex-1 bg-red-500 text-white py-2 rounded cursor-pointer"
+                className="flex-1 rounded-lg bg-red-600 text-white py-2 cursor-pointer hover:bg-red-500"
               >
                 Continue
               </button>
